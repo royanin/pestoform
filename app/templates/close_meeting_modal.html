@@ -1,0 +1,61 @@
+<!--<button type="button" class="btn btn-sm btn-primary navbar-btn" data-toggle="modal" data-target="#new-entry">New!</button> -->
+<div class="modal fade" id="close-modal-{{ var.id }}" tabindex="-1" role="dialog" aria-labelledby="delete-modal">
+{% set var2 = 'meeting' %}
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <p class="modal-title" id="delete-modal">Stop/Resume feedback for
+            <span class="label label-warning">{{ var.title }}</span>?</p>
+          <br>
+          {% if var.close_stat == 0 %}
+          <p>The form is currently accepting feedback</p>
+          {% elif var.close_stat == 1 %}
+          <p>The form is not accepting feedback; but content is visible to those with the link</p>
+          {% elif var.close_stat == 2 %}
+          <p>The form is not accepting feedback; content is hidden to everyone</p>
+          {% endif %}
+          <!-- <h4 class="sub title">This action cannot be undone</h4> -->
+      </div>
+    <form action='/{{ var2 }}_close' method="post" name="post" onsubmit="setTimeout(function () { window.location.reload(); }, 10)">
+    <div class="modal-body">
+                <div class="input-group">
+                    {% if var.close_stat != 0  %}
+                    <div class="radio">
+                        <label><input type="radio" name="closeopt" value="0">Resume accepting feedback</label>
+                    </div>
+                    {% endif %}
+                    {% if var.close_stat != 1  %}
+                    <div class="radio">
+                        <label><input type="radio" name="closeopt" value="1">Stop accepting feedback; keep content visible to those with the link</label>
+                    </div>
+                    {% endif %}
+                    {% if var.close_stat != 2  %}
+                    <div class="radio">
+                        <label><input type="radio" name="closeopt" value="2" checked="">Stop accepting feedback AND hide content</label>
+                    </div>
+                    {% endif %}
+                </div>
+
+    </div>
+      <div class="modal-footer">
+        <div class="row-fluid">
+            <div class="col-sm-12">
+                <div class="checkbox">
+                    <!-- <form action='/{{ var2 }}_close' method="post" name="post"> -->
+                    {{ g.meeting_form.id(type = 'hidden', value=var.id) }}
+                    {{ g.meeting_form.title(type = 'hidden', value=var.title) }}
+                    {{ g.meeting_form.course_id(type = 'hidden', value=var.course_id) }}
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" name="meeting_id" class="btn btn-primary" value="{{ var.id }}">Submit changes</button>
+                    {{ g.meeting_form.hidden_tag() }}
+                    
+                </div>
+            </div>
+        </div>
+        
+      </div>
+        </form>
+        </div>      
+      </div>
+    </div>

@@ -1,0 +1,54 @@
+{# {% extends "index.html" %}
+{% set active_page = "menu4" %} #}
+{% block content %}
+    {% if g.user.is_authenticated %}
+    <div class="row">
+    <div class="col-sm-6 col-sm-offset-3 text-center">
+    <h4>Create a new folder</h4>
+    <form action='/course_action_edit' method="post" name="post" enctype="multipart/form-data" >
+        {% if course %}
+            {{ g.course_form.id(type = 'hidden',value=course.id) }}
+        {% endif %}
+      <div class="form-group">
+            {% if course %}
+                {{ g.course_form.title(id="entry-title", maxlength="140", class="form-control", placeholder="Title:", value=course.title) }}
+            {% else %}
+                {{ g.course_form.title(id="entry-title", maxlength="140", class="form-control", placeholder="Folder title (required)") }}
+            {% endif %}
+       </div> 
+       <div class="form-group">
+            {% if course %}
+                {{ g.course_form.level(id="course_level", value=course.level) }}
+            {% else %}
+            <!--Level of this course (optional):-->
+            <select name = "level" class="form-control">
+            <option value='0'> Select level (None) </option>
+            <option value='1'> Elementary (K-12)  </option>
+            <option value='2'> Middle school (K-12)  </option>
+            <option value=3> High school (K-12) </option>
+            <option value=4> Undergraduate beginner </option>
+            <option value=5> Undergraduate advanced </option>
+            <option value=6> Graduate </option>
+            <option value=7> Lifelong learning </option>
+            <option value=8> Workplace learning </option>
+            <option value=9> Other </option>
+            </select>
+            {{ g.course_form.level(type="hidden", value=value) }}
+            {% endif %}
+        </div>       
+       <!-- </div> -->
+          <!--
+        <div class="form-group">
+                            <label for="entry-kwds" class="control-label"></label>
+                            <input type="text" class="form-control" id="entry-kwds" placeholder="Start typing to tag subjects (optional)">
+                        </div> -->
+
+        <button type="submit" class="btn btn-sm btn-primary" value="save">Create new folder</button>
+        {{ g.course_form.hidden_tag() }}
+
+        </form>
+</div>
+</div>
+        {% endif %}
+
+{% endblock %}

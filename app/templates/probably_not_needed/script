@@ -1,0 +1,59 @@
+<script>
+$(document).ready(function(){
+    $("button-{{ item.id }}").click(function(){
+        var muddy_like_count = $('#muddy-{{ item.like_count }}').val();
+        $.ajax({
+                url: "/update_vote",
+                async: false,
+                data: JSON.stringify( { "vote" : "1" } ),
+                success: function(result){
+                        $("#vote-{{ item.id }}").html(result);
+                },
+                error: function(error){
+				    $("#vote-{{ item.id }}").log(error);
+                }
+        });
+    });
+});
+</script>
+
+<td>
+        {#<form action=""  role="form">#}
+        <div class="input-group">
+        {#<input type="" id="muddy-{{ item.like_count }}" name="item_like_count" class="form-control">#}
+        <button id="vote-{{ item.id }}" type="button-{{ item.id }}" class="btn btn-warning btn-xs">
+            <span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span>   
+        </button>
+        </div>
+        {#</form>#}
+</td>
+
+
+var muddy_like_count = $('{{ item.like_count }}').val();
+
+
+type: "POST",
+data: JSON.stringify(muddy_like_content, null, '\t'), 
+-=============
+
+The following is working:
+
+<script>
+$(document).ready(function(){
+    $("button-{{ item.id }}").click(function(){
+    var user = $('#intmuddy_id').val();
+    var pass = $('#intlike_count').val();
+        $.ajax({
+            url: '/update_vote',
+            data: $('form').serialize(),
+            type: 'POST',
+            success: function(response) {
+                console.html(response);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    });
+});
+</script>

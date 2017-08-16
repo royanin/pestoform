@@ -1,0 +1,58 @@
+<!-- extend base layout -->
+<div class="col-md-11 col-sm-11">
+<div>
+    <div class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Folders <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                {% if live_num > 0 %}
+                    {% for course in g.user.courses %}
+                        {% if course.live_stat==True %}
+                        <li><a href="#id-{{ course.id }}" data-toggle="collapse"> {{ course.title }} </a></li>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}    
+                {% if archived_num > 0 %}
+                        <li class="divider"></li>
+                        <li><a href="#" data-toggle="tab"> Archived folders </a></li>
+                {% endif %}
+            </ul>                      
+    </div>
+</div>
+</div>
+{# data-toggle="collapse" data-target="#pane-{{ meeting.course_id }}-{{ meeting.id }}" #}
+
+<div class="col-md-11 col-sm-11">
+<div id="folderGroup">
+{% for course in g.user.courses %}
+    <div class="tab-content">
+        <div id="id-{{ course.id }}" class="collapse indent">
+            {% with meetings_var = course.meetings %}
+            {% include 'meeting_pane_view.html' %}
+            {% endwith %}
+        </div>
+    </div>
+{% endfor %}
+</div>
+</div>
+<script>
+    var $folderGroup = $('#folderGroup');
+    $folderGroup.on('show.bs.collapse','.collapse', function() {
+        $folderGroup.find('.collapse.in').collapse('hide');
+    });
+</script>
+
+
+{#
+{% if live_num > 0 %}
+    {% with var_live_stat=True %}
+        {% include 'course_view.html' %}
+    {% endwith %}
+{% endif %}
+
+{% if archived_num > 0 %}
+    {% with var_live_stat=False %}
+        {% include 'course_view.html' %}
+    {% endwith %}
+
+{% endif %}
+#}

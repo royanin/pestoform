@@ -1,0 +1,9 @@
+Dear {{ email }},
+
+
+The feedback form {{ meeting.title }} is now open!
+
+Follow/Share the link to access the form: "{{ config.DEV_SITE }}/m/{{ meeting.url_string }}"
+
+Regards,
+The Pestoform admin

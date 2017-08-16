@@ -1,0 +1,27 @@
+<!-- <div class="dropdown"> -->
+                        <button class="btn btn-default btn-xs dropdown-toggle" aria-label="form-sort-dd" data-toggle="dropdown" id="#dropdown-folder-select"  aria-haspopup="true"> 
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdown-folder-select">
+                            <li class="active">
+                                {% if session['course_num'] %}
+                                <a href="#">{{ session['course_title'] }} </a>
+                                {% endif %}
+                            </li>
+
+                            <li role="separator" class="divider"></li>
+                            {% for course in g.user.courses %}
+                                {% if course.id != session['course_num'] %}
+                                <li>
+                                <form action='/view_folder' method="post" id ="select-folder-{{ course.id }}" name="post">
+                                    <input type="hidden" name="course_id"  value="{{ course.id }}">
+                                </form>
+                                <a href="#" onclick="document.getElementById('select-folder-{{ course.id }}').submit()">
+                                {{ course.title }}</a>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                            <!-- </form> -->
+                        </ul>
+<!-- </div> -->
+

@@ -1,0 +1,54 @@
+{# {% extends "/security/social_login.html" %} #}
+ {% extends "landing.html" %}
+{# {% extends "base.html" %} #}
+{% block content %}
+
+{# {% include "security/social.html" %} #}
+<div class="container">
+        <div class="row">
+            <!-- <div class="col-sm-4 col-lg-offset-2 text-center"></div> -->
+                <div class="col-lg-4 col-lg-offset-4 text-center">
+                    <!-- <h2 class="section-heading">or</h2> -->
+                    <h3>Login with email and password </h3>
+{% from "custom_macros.html" import render_field_with_bootstrap_errors %}
+<form action='{{ url_for_security("login",next="login")+"#login" }}' method="POST" name="login_user_form">
+  {{ login_user_form.hidden_tag() }}
+    {# <div class="form-group">
+    {{ login_user_form.test_code(class="form-control", placeholder="Please enter your test code") }}
+    {{ render_field_with_errors(login_user_form.test_code,  placeholder="test code") }}
+    </div> #}
+    
+    <div class="form-group">
+    {{ render_field_with_bootstrap_errors(login_user_form.email, maxlength="140", class="form-control", placeholder="Email") }}
+    </div>
+    
+    <div class="form-group">
+    {# {{ login_user_form.password(class="form-control", placeholder="Password") }} #}
+  {{ render_field_with_bootstrap_errors(login_user_form.password, class="form-control", placeholder="Password") }}
+    </div>
+    <div class="checkbox">
+        <label>{{ login_user_form.remember() }} Remember me </label>
+  {# {{ render_field_with_bootstrap_errors(login_user_form.remember) }} #}
+    </div>
+  {# {{ render_field(login_user_form.next) }} #}
+
+  <button type="submit" class="btn btn-sm btn-primary" value="save">Login</button>{# {{ render_field(login_user_form.submit) }} #}
+
+    </form>
+<!-- </div>
+</div> -->
+{# {% include "security/_menu.html" %} #}
+    <br>
+<p>
+<!-- <a href='register'>Register using email and password</a><br> -->
+<!-- <a href="register#login">Register using email and password</a><br> -->
+<a href="{{ url_for('register_beta') }}">Register using email and password</a><br>    
+{# <a href="{{ url_for_security('reset') }}">Forgot password</a> #}
+<a href='reset#login'>Forgot password</a>
+</p>
+            </div>
+    </div>
+    
+</div>
+
+{% endblock %}

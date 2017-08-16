@@ -1,0 +1,92 @@
+{% if var_live_stat== True %}
+    {% set var_stat = 'live' %}
+    <span class="label label-default"> LIVE</span>
+{% else %}
+    {% set var_stat = 'archived' %}
+    <span class="label label-default"> ARCHIVED</span>
+{% endif %}
+
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <td>course</td>
+        <td>created</td>
+        <td>options</td>
+        <td>#meetings</td>
+      </tr>
+    </thead>
+    <tbody>
+{% for course in user.courses %}
+    {% if course.live_stat==var_live_stat %}
+    <tr valign="top">
+        <td>
+            <div class="col-lg-4"><a href="/index#id-{{ course.id }}">{{ course.title }}</a></div>
+        </td>
+        <td>
+            <div class="col-lg-1">{{ course.timestamp.strftime('%m/%d/%Y') }}</div>
+        </td>
+        <td>           
+            <div class="col-md-1">
+                <div class="dropdown">
+                {% with var = course %}
+                <button class="btn btn-default dropdown-toggle" aria-label="options-dd" data-toggle="dropdown" id="#dropdown-{{ var.id }}"  aria-haspopup="true">
+                         <i class="fa fa-ellipsis-v" aria-hidden="true"> <span class="caret"></span></i>
+                        <!-- <span class="glyphicon glyphicon-trash" aria-hidden="true"></span> -->
+                </button>
+    <ul class="dropdown-menu" aria-labelledby="dropdown-{{ var.id }}">
+    <li>
+                <a href="#" onclick="document.getElementById('form-download-course-{{ var.id }}').submit()"> Download course details </a>
+                <form action='/dl_csv' method="post" id = "form-download-course-{{ var.id }}" name="post">
+                {{ g.course_form.id(type = 'hidden', value=var.id) }}
+                {# <button type="submit" name = "course_id" class="btn btn-link" value="{{ var.id }}">
+                        Download course details
+                    </button> #}
+                </form>
+    </li>
+    <li>
+                <form action='/send_course_view' method="post" id = "form-email-course-{{ var.id }}" name="post">
+                {{ g.course_form.id(type = 'hidden', value=course.id) }}
+                </form>
+                <a  href="#" onclick="document.getElementById('form-email-course-{{ var.id }}').submit()">   Email course details</a>
+    </li>
+    <li>
+            <form action='/course_archive' method="post" id = "form-archive-course-{{ var.id }}" name="post">
+                {{ g.course_form.id(type = 'hidden', value=var.id) }}
+            </form>
+                    {% if var.live_stat == True %}
+                    <a  href="#" onclick="document.getElementById('form-archive-course-{{ var.id }}').submit()"> Archive course </a>
+                   {% else %}
+                    <a  href="#" onclick="document.getElementById('form-archive-course-{{ var.id }}').submit()"> Make the course live </a>
+                    {% endif %}
+
+    </li>
+    <li>
+                <a  href="#" onclick="document.getElementById('').submit()">View/edit course info</a>
+    </li>
+    <li>
+        <a href="/index#new_meeting_link">Create a new meeting</a>
+    </li>
+        {#    {% endwith %} #}
+    <li role="separator" class="divider"></li>
+    <li>
+            {# <button class="btn btn-default btn-sm" aria-label="delete-modal" data-toggle="modal" data-target="#delete-modal-{{ var.id }}"> Delete
+            </button> #}
+           <a href="#delete-modal-{{ var.id }}"  aria-label="delete-modal" data-toggle="modal"> Delete course</a>
+    </li>                     
+  </ul>
+            {% include 'delete_modal.html' %}   
+                {% endwith %}
+                </div>
+            </div>
+            
+        </td>
+        <td>
+            <div class="col-md-1">
+            {{ course.meetings.count() }}
+            </div>
+        </td>
+    </tr>
+    {% endif %}
+{% endfor%}
+</tbody>
+</table>

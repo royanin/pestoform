@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<div class="container">
+                <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">Sign in</h2>
+                            <div>
+                                <a href="{{ url_for('oauth_authorize', provider='facebook') }}" class="btn btn-default"><i class="fa fa-facebook"></i> | Sign in with Facebook</a>
+                            </div>
+
+                            <div>
+                                <!-- <a href="/identity/sign-in/g-normal.png" id="my-signin2"><i class="fa fa-google"></i> | Sign in with Google</a> -->
+                                <!-- <a href="" class="btn btn-default" id="googleSignIn"><i class="fa fa-google"></i> | Sign in with Google</a> -->
+                                <!-- <image id="googleSignIn" src="/static/custom_theme/img/brand.png" width="24px"></image>
+                                <script src="https://apis.google.com/js/platform.js?onload=onLoadGoogleCallback" async defer></script> -->
+                            </div>
+                    <hr class="primary">
+                </div>
+                </div>
+                <div  class="col-lg-4 col-lg-offset-4 text-center">
+                    <h2 class="section-heading">or</h2>
+                </div>
+
+  <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+    
+        <script>
+            function onSuccess(googleUser) {
+  var xhr = new XMLHttpRequest();
+  var id_token = googleUser.getAuthResponse().id_token;
+  console.log('id_token: '+id_token);
+  xhr.open('POST', '/gcallback');
+  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.onload = function() {
+  window.location.href='/index';
+  console.log('Signed in as: ' + xhr.responseText);
+  };
+  xhr.send('id_token='+id_token);
+    }
+            function onFailure(error) {
+      console.log(error);
+    }
+            function renderButton() {
+      gapi.signin2.render('my-signin2', {
+        'scope': 'profile email',
+        'width': 182,
+        'height': 30,
+        'longtitle': true,
+        'theme': 'light',
+        'onsuccess': onSuccess,
+        'onfailure': onFailure
+      });
+                
+    }
+        </script>
+        <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+
+</div>

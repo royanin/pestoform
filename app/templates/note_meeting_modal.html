@@ -1,0 +1,51 @@
+<!--<button type="button" class="btn btn-sm btn-primary navbar-btn" data-toggle="modal" data-target="#new-entry">New!</button> -->
+<div class="modal fade" id="note-modal-{{ var.id }}" tabindex="-1" role="dialog" aria-labelledby="note-modal">
+{% set var2 = 'meeting' %}
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <p class="modal-title" id="note-modal">Add/edit note for meeting
+            <span class="label label-warning">{{ var.title }}</span></p>
+          <!-- <h4 class="sub title">This action cannot be undone</h4> -->
+      </div>
+    <form action='/{{ var2 }}_note' method="post" name="post" onsubmit="setTimeout(function () { window.location.reload(); }, 10)">
+    <div class="modal-body">
+                <div class="form-group">
+                    <div class="col-sm-12">
+                    {{ g.meeting_form.note(id="note-text", rows=3,  maxlength="300", class="form-control", placeholder="Add a note", value= var.note ) }}
+                    </div>
+                </div>
+
+    </div>
+      <div class="modal-footer">
+        <div class="row-fluid">
+            <div class="col-sm-12">
+                {{ g.meeting_form.id(type = 'hidden', value=var.id) }}
+                {{ g.meeting_form.title(type = 'hidden', value=var.title) }}
+                {{ g.meeting_form.course_id(type = 'hidden', value=var.course_id) }}
+                <span class="form-control-static pull-left"><div id="count_message"></div></span>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" name="meeting_id" class="btn btn-primary" value="{{ var.id }}">Add/edit note</button>
+                  {{ g.meeting_form.hidden_tag() }}
+                    
+            </div>
+        </div>
+        
+      </div>
+        </form>
+        </div>      
+      </div>
+    </div>
+        <script>
+    var text_max = 300;
+$('#count_message').html(text_max + ' characters remaining');
+
+$('#note-text').keyup(function() {
+  var text_length = $('#note-text').val().length;
+  var text_remaining = text_max - text_length;
+  
+  $('#count_message').html(text_remaining + ' characters remaining');
+});
+    
+        </script>

@@ -1,0 +1,70 @@
+<!--<button type="button" class="btn btn-sm btn-primary navbar-btn" data-toggle="modal" data-target="#new-entry">New!</button> -->
+<div class="modal fade" id="options-modal-{{ var.id }}" tabindex="-1" role="dialog" aria-labelledby="delete-modal">
+{% set var2 = 'meeting' %}
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <p class="modal-title" id="delete-modal">Edit details for
+            <span class="label label-warning">{{ var.title }}</span></p><br>
+           <div style="font-size:90%; color:#777777">
+                Created {{ momentjs(meeting.timestamp.strftime("%Y-%m-%dT%H:%M:%S Z")).format("MMM Do 'YY, hh:mm a") }}
+          </div>
+          <br>
+      </div>
+    <form action='/{{ var2 }}_action_edit' method="post" name="post" onsubmit="setTimeout(function () { window.location.reload(); }, 100)">
+    <div class="modal-body">
+                <div class="form-group">
+                    <em>Title:</em>
+                    {{ g.meeting_form.title(id="entry-title", type="title", maxlength="140", class="form-control", placeholder="Title:", value=meeting.title) }}
+                </div>
+                <div class="form-group">
+                    <em>Prompt:</em>
+                    {{ g.meeting_form.prompt(id="entry-prompt", type="prompt", maxlength="140", class="form-control", placeholder="Prompt:", value=meeting.prompt) }}
+                </div>
+                <div class="form-group">
+                    <em>Folder:</em>
+                    <select name = "course_id" class="form-control">
+                        {% if session['course_num'] %}
+                      <option value={{ session['course_num'] }}> {{ session['course_title'] }}</option>
+                        {% endif %}
+                    {% for item in g.user.courses %}
+                        {% if item.id != session['course_num'] %}
+                      <option value={{ item.id }}> {{ item.title }}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                </div>
+                <em>Once you stop accepting feedback,</em>
+                <div class="form-group">
+                    <select name = "close_opt" class="form-control">
+                    {% if meeting.close_opt == 2 %}
+                        <option value="2"> earlier responses remain visible, no new feedback accepted</option>
+                      <option value="1"> earlier responses no longer visible to linkholders</option>
+                    {% else %}
+                        <option value="1"> earlier responses no longer visible to linkholders</option>
+                      <option value="2"> earlier responses remain visible, no new feedback accepted</option>
+                    {% endif %}
+                    </select>
+                </div>
+                <em>Form closing time: {{ momentjs(meeting.live_till.strftime("%Y-%m-%dT%H:%M:%S Z")).format("MMM Do 'YY, hh:mm a") }} </em> (Modify below)
+                {% include 'meeting_calendar.html' %}
+                
+    </div>
+      <div class="modal-footer">
+        <div class="row-fluid">
+            <div class="col-sm-12">
+                <div class="checkbox">
+                {{ g.meeting_form.id(type = 'hidden',value=var.id) }}
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" name="meeting_id" class="btn btn-primary" value="{{ var.id }}">Submit changes</button>
+                {{ g.meeting_form.hidden_tag() }}
+                </div>    
+            </div>
+        </div>
+        
+      </div>
+        </form>
+        </div>      
+      </div>
+    </div>

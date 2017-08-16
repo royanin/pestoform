@@ -1,0 +1,13 @@
+<p>Dear {{ email }},</p>
+
+
+<h3>The feedback form {{ meeting.title }} is now open!</h3>
+<br><br>
+
+<a href="{{ config.SITE }}/m/{{ meeting.url_string }}">Follow this link to leave a comment/upvote others' comments.</a>
+
+<p>Link: {{ config.SITE }}/m/{{ meeting.url_string }}</p>
+
+<br><br>
+<p>Regards,</p>
+<p>The <code>Pestoform</code> admin</p>

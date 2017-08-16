@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% set active_page = "menu5" %}
+
+{% block content %}
+<br><br><br>
+<div class="container">
+    <div class="col-md-11 col-sm-11">
+        <ul class="nav nav-tabs">
+            <li><a  data-toggle="tab" href="#faq"> FAQ </a></li>
+            <li><a  data-toggle="tab" href="#help"> Help </a></li>
+            <li><a  data-toggle="tab" href="#privacy"> Privacy </a></li>
+            <li><a  data-toggle="tab" href="#tos"> Terms </a></li>
+            <li><a  data-toggle="tab" href="#contact"> Contact us </a></li>
+            <li><a  data-toggle="tab" href="#about"> About us </a></li>
+        </ul>   
+    </div>
+</div>
+
+<div class="container">
+<div class="col-md-11 col-sm-11">
+    <div class="tab-content">
+        <div id="faq" class="tab-pane fade">
+            {% include "faq.html" %}
+        </div>
+        <div id="help" class="tab-pane fade">
+            {% include "help.html" %}
+        </div>
+        <div id="privacy" class="tab-pane fade">
+            {% include "privacy.html" %}
+        </div>
+        <div id="tos" class="tab-pane fade">
+            {% include "tos.html" %}
+        </div>
+        <div id="contact" class="tab-pane fade">
+            {% include "contact.html" %}
+        </div>
+        <div id="about" class="tab-pane fade">
+            {% include "about.html" %}
+        </div>
+    </div>
+    <script>
+    $(document).ready(function() {
+    var hash = window.location.hash;
+    hash && $('ul.nav a[href="' + hash + '"]').tab('show');
+    });      
+    </script>
+</div>
+</div>
+{% endblock %}

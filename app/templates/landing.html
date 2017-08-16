@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+{% include "html_header.html" %}
+
+<body id="page-top">
+    <!-- <nav bar> -->
+    {% include "nav.html" %}
+
+    <!-- <header class="bg-primary"> -->
+    <header>
+        <div class="header-content">
+                <div class="header-content-inner">
+                    <h1 id="homeHeading">Anonymous feedback made easy</h1>
+                    <hr>
+                    <h3>Fast, free, no-clutter</h3>
+                    <a href="{{ url_for('new_form') }}" class="btn btn-primary btn-xl">Create a new form</a>
+                    <a href="#about" class="btn btn-info btn-xl page-scroll">Find out more</a>
+                </div>
+         </div>
+    </header>
+
+    <section class="bg-dark" id="about">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">Create a form, share, get feedback!</h2>
+                    <hr class="light">
+                    <p class="text-faded">
+                         </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="works">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">How it works</h2>
+                    <hr class="primary">
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-file-text text-primary sr-icons"></i>
+                        <h3>Step 1: Create a new form</h3>
+                        <p class="text-muted">Use our standard question or ask your own.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-share-alt text-primary sr-icons"></i>
+                        <h3>Step 2: Share your form</h3>
+                        <p class="text-muted">Share the weblink via email or social media.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-users text-primary sr-icons"></i>
+                        <h3>Step 3: Get feedback</h3>
+                        <p class="text-muted">Respondents can comment, and/or upvote comments.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 text-center">
+                    <div class="service-box">
+                        <i class="fa fa-4x fa-repeat text-primary sr-icons"></i>
+                        <h3>Step 4: Rinse and repeat</h3>
+                        <p class="text-muted">Create more forms. Organize them into folders. Download your files.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="no-padding" id="examples">
+    <aside class="bg-dark">
+        <div class="container text-center">
+            <div class="call-to-action">
+                <a href="{{ url_for('new_form') }}" class="btn btn-default btn-xl sr-button">Create a new form</a>
+                <h3>Use Pestoform wherever feedback helps: from classroom to seminars, from workshops to meetings.</h3>
+            </div>
+        </div>
+    </aside>
+    </section>
+    
+    <section id="login">
+        <div class="container">
+            <div class="row">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </section>
+    
+    <section id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <h2 class="section-heading">Let's Get In Touch!</h2>
+                    <hr class="primary">
+                    <p> We'd love to hear back from you!</p>
+                </div>
+                <div class="col-lg-8 col-lg-offset-2 text-center">
+                    <i class="fa fa-envelope-o fa-3x sr-contact"></i>
+                    <p><a href="mailto:hello@pestoform.com">hello@pestoform.com</a></p>
+                    <div class="divider-5"></div>
+                    <p><a href="/stuff#faq">FAQ</a> | <a href="/stuff#help">Help</a> | <a href="/stuff#privacy" onclick="location.reload()">Privacy</a> | <a href="/stuff#terms" onclick="location.reload()">Terms</a>
+                        | <a href="/stuff#about" onclick="location.reload()">About us</a></p>
+                </div>
+                <div class="divider-10"></div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

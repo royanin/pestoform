@@ -1,0 +1,106 @@
+{# {% extends "base.html" %}
+{% set active_page = "menu1" %} #}
+{% block content %}
+    {% if g.user.is_authenticated %}
+    <!-- <div class="container"> -->
+    <div class="row">
+    <div class="col-sm-6 col-sm-offset-3 text-center">
+        <h4>Create a new form</h4>
+    <form action='/meeting_action_edit' method="post" name="post" enctype="multipart/form-data" >
+        {% if meeting %}
+            {{ g.meeting_form.id(type = 'hidden',value=meeting.id) }}
+        {% endif %}
+          <div class="form-group">
+            {% if meeting %}
+                {{ g.meeting_form.title(id="entry-title", maxlength="140", class="form-control", placeholder="Title:", value=meeting.title) }}
+            {% else %}
+                {{ g.meeting_form.title(id="entry-title", maxlength="140", class="form-control", placeholder="Form title (required)") }}
+            {% endif %}
+              </div>
+          <div class="form-group">
+            {% if meeting %}
+                {{ g.meeting_form.prompt(id="entry-prompt", maxlength="100", class="form-control", placeholder="Form prompt:", value=meeting.title) }}
+            {% else %}
+                {{ g.meeting_form.prompt(id="entry-prompt", maxlength="140", class="form-control", placeholder="Your question/instruction to respondants") }}
+            {% endif %}
+              </div>
+            <div class="form-group">
+                    <select name = "course_id" class="form-control">
+                        {% if session['course_num'] %}
+                      <option value={{ session['course_num'] }}> {{ session['course_title'] }}</option>
+                        {% endif %}
+                    {% for item in g.user.courses %}
+                        {% if item.id != session['course_num'] %}
+                      <option value={{ item.id }}> {{ item.title }}</option>
+                        {% endif %}
+                    {% endfor %}
+                    </select>
+                <a href="#new_folder" data-toggle="collapse"><em>Tip:</em> Organize forms into folders</a>
+        </div>
+
+        <div class="form-group">
+            <a href="#advanced_opt" data-toggle="collapse">Advance options</a>
+            <div id="advanced_opt" class="collapse indent">
+                <div class="form-group">
+                    <select name = "close_opt" class="form-control">
+                      <option value="1"> Feedback form not visible to public once closed</option>
+                      <option value="2"> Feedback form remains visible, no new feedback accepted upon closing</option>
+                    </select>
+                </div>
+                
+                <p>Keep this form active for</p>
+                {% include 'meeting_timedelta.html' %}
+      
+                {# <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-4">
+                    <select name = "live_till_month" class="form-control">
+                        {% for i in range(0,12) %}
+                            <option value={{ i }}> {{ i }}</option>
+                        {% endfor %}
+                    </select>
+                            <span>months</span>
+                        </div>
+                        <div class="col-sm-4">
+                    <select name = "live_till_days" class="form-control">
+                        {% for i in range(0,32) %}
+                            {% if i != 14 %}
+                            <option value={{ i }}> {{ i }}</option>
+                            {% else %}
+                            <option value={{ i }} selected> {{ i }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                            <span>days</span>
+                        </div>
+                        <div class="col-sm-4">
+                    <select name = "live_till_hours" class="form-control">
+                        {% for i in range(0,24) %}
+                            <option value={{ i }}> {{ i }}</option>
+                        {% endfor %}
+                    </select>
+                            <span>hours</span>
+                        </div>
+
+
+                    
+                    </div>
+                </div> #}
+                
+            </div>
+        </div>
+                 
+            {{ g.meeting_form.course_id(type="hidden", value=value) }}
+                <button type="submit" class="btn btn-sm btn-primary" value="save">Create new form</button>
+                {{ g.meeting_form.hidden_tag() }}
+
+        </form>
+    </div>
+    </div>
+    <!-- </div> -->
+    {% endif %}
+    <div id="new_folder" class="collapse indent">
+        <br><br><hr>
+                    {% include 'link_new_course.html' %}
+    </div>
+{% endblock %}

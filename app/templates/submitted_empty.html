@@ -1,0 +1,10 @@
+<!-- extend base layout -->
+{% extends "anon_base.html" %}
+
+{% block content %}
+
+<h4>We couldn't record any comment/upvote</h4>
+<p>If this was by mistake, <a href="{{ config.SITE }}/m/{{ session['url_string'] }}">please try again.</a></p>
+
+
+{% endblock %}

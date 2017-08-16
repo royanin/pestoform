@@ -1,0 +1,35 @@
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-sm-4">
+                    <select name = "live_till_month" class="form-control">
+                        {% for i in range(0,12) %}
+                            <option value={{ i }}> {{ i }}</option>
+                        {% endfor %}
+                    </select>
+                            <span>months</span>
+                        </div>
+                        <div class="col-sm-4">
+                    <select name = "live_till_days" class="form-control">
+                        {% for i in range(0,32) %}
+                            {% if i != 14 %}
+                            <option value={{ i }}> {{ i }}</option>
+                            {% else %}
+                            <option value={{ i }} selected> {{ i }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                            <span>days</span>
+                        </div>
+                        <div class="col-sm-4">
+                    <select name = "live_till_hours" class="form-control">
+                        {% for i in range(0,24) %}
+                            <option value={{ i }}> {{ i }}</option>
+                        {% endfor %}
+                    </select>
+                            <span>hours</span>
+                        </div>
+
+
+                    
+                    </div>
+                </div>

@@ -1,0 +1,40 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+{% set active_page = "menu1" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <ul class="nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#new_meeting_link">
+                    <span class="fa-stack">
+                    <i class="fa fa-plus fa-stack-1x sr-create-file"></i>
+                    <i class="fa fa-file-o fa-stack-2x sr-create-file"></i>
+                    </span> NEW FORM</a></li>
+                <li><a  data-toggle="tab" href="#new_course_link">
+                    <span class="fa-stack">
+                        <i class="fa fa-plus fa-stack-1x"></i>
+                        <i class="fa fa-folder-o fa-stack-2x sr-create-folder"></i></span> NEW FOLDER</a></li> 
+            </ul>
+        </div>
+        </div>
+<br><br>
+<div class="container">
+
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+      <div class="tab-content">
+
+        <div id="new_meeting_link" class="tab-pane active">
+            {% include 'link_new_meeting.html' %}
+        </div>
+        
+        <div id="new_course_link" class="tab-pane fade">
+            {% include 'link_new_course.html' %}
+        </div>
+          
+    </div>
+</div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+{% set active_page = "menu2" %}
+
+{% block content %}
+{% if user.all_meetings.count() == 0 %}
+<div class="container">
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="col-sm-6 col-sm-offset-3 text-center">
+        <h3><a href="index">Create your first form <i class="fa fa-file-text-o sr-create-file"></i></a></h3>
+        <!-- <h3>or,</h3>
+        <p><a href="/index#new_course_link" onclick="window.location.reload()">Create a folder first to better organize your forms</a></p> -->
+    </div>
+    </div>
+</div>
+{% else %}
+<div class="container">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="pull-left">
+            All forms {% include "sort_forms.html" %}
+        </div>
+        <div class="pull-right" style="font-size:90%; color:#777777">
+            or view by <i class="fa fa-folder-o" aria-hidden="true"></i>{% include "select_folder.html" %}
+        </div>
+</div>
+</div>
+
+<br><br>
+<div class="container">
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        {% if g.user.all_meetings.count() > 0 %}
+              {% with meetings_var = meetings_sorted %}
+                {% include "meeting_table_view.html" %}
+              {% endwith %}
+        {% endif %}
+    
+
+</div>
+</div>
+
+{% endif %}
+{% endblock %}

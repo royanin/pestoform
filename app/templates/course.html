@@ -1,0 +1,42 @@
+<div class="container">
+    <div class="col-md-0"></div>
+    <div class="col-md-8">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-2">{{ course.timestamp.strftime('%m/%d/%Y %I:%M %p') }}<br>
+                    <button type="button" class="btn btn-warning btn-xs" aria-label="Delete entry">
+                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                    </button>
+                    
+                    <button type="button" class="btn btn-success btn-xs" aria-label="Edit entry" data-toggle="modal" data-target="#edit-entry-{{ course.id }}">
+                        <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    </button>
+                    
+                    {% with var_course1="edit", var=course.id %}
+                        {% include 'course_action_edit.html' %}
+                    {% endwith %}
+
+                    <button type="button" class="btn btn-info btn-xs" aria-label="Live entry">
+                        <span class="glyphicon glyphicon-flash" aria-hidden="true"></span>
+                    </button>
+                </div>
+                <div class="col-md-10">
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-default">
+                            <div class="panel-heading" role="tab">
+                                <h5 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#id-{{ course.id }}" aria-expanded="false">{{ course.title }}</a></h5>
+                            </div>
+                                <div id="id-{{ course.id }}" class="panel-collapse collapse">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+

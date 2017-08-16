@@ -1,0 +1,52 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+{% set active_page = "menu1" %}
+
+{% block content %}
+
+<div class="col-sm-6 col-sm-offset-3 text-center">
+
+    <h3>Form "{{ meeting.title }}" has been created.</h3>
+    
+    <p><a href="{{ url_for('m', url_string=meeting.url_string) }}" target="_blank">Click here to check out the recipient view of the form</a></p>
+    <div class="col-sm-12 col-xs-12" id="p1">
+        <p  style="font-size:80%; color:#777777"><span style="word-wrap:break-word;">
+            {{ config.SITE }}{{ url_for('m', url_string=meeting.url_string) }}
+            </span></p>
+    <!-- <button onclick="copyToClipboard('#p1')">Copy Link</button> -->
+    </div>
+<form action='/send_form_open' method="post" id = "form-open-email-{{ meeting.id }}" name="post">
+    <div class="row-fluid">
+        <div class="col-sm-12">
+            <button onclick="copyToClipboard('#p1')" type="button" class="btn btn-sm btn-primary">Copy link</button>
+            {{ g.meeting_form.id(type = 'hidden', value=meeting.id) }}
+            <button type="submit" class="btn btn-sm btn-default" value="save">Email me the link</button>
+                {{ g.meeting_form.hidden_tag() }}
+        </div>
+    </div>
+</form>
+    
+    <p><a href="index">Create more forms</a> | <a href="view"> Go to dashboard</a> | <a href="/view_feedback/{{ meeting.url_string }}">Other form options</a></p>
+
+</div>
+    
+<script>
+    copyToClipboard = function (element) {
+    var $temp = $("<input />");
+    $("body").append($temp);
+    $temp.val($(element).text()).select();
+
+    var result = false;
+    try {
+        result = document.execCommand("copy");
+    } catch (err) {
+        console.log("Copy error: " + err);
+    }
+
+    $temp.remove();
+    return result;
+}
+    
+</script>
+
+{% endblock %}

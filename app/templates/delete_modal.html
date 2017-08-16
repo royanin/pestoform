@@ -1,0 +1,44 @@
+<!--<button type="button" class="btn btn-sm btn-primary navbar-btn" data-toggle="modal" data-target="#new-entry">New!</button> -->
+{# {% if course %} #}
+    <div class="modal fade" id="delete-modal-{{ var.id }}" tabindex="-1" role="dialog" aria-labelledby="delete-modal">
+{# {% else %} #}
+    <!--<div class="modal fade" id="new-meeting-entry" tabindex="-1" role="dialog" aria-labelledby="new-entry-label">-->
+{# {% endif %} #}
+{% if var == course %}
+{% set var2 = 'course' %}
+{% elif var == meeting %}
+{% set var2 = 'meeting' %}
+{% elif var == muddy %}
+{% set var2 = 'feedback' %}
+{% endif %}
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <p class="modal-title" id="delete-modal">Delete {{ var2 }}
+            <span class="label label-warning">{{ var.title }}</span>?</p> <h4 class="sub title">This action cannot be undone</h4>
+      </div>
+    
+    {#    {% if meeting %}
+            {{ g.meeting_form.id(type = 'hidden',value=meeting.id) }}
+        {% endif %}
+      #}
+        
+      <div class="modal-footer">
+        <div class="row-fluid">
+            <div class="col-sm-12">
+                <div class="checkbox">
+                    <form action='/{{ var2 }}_delete' method="post" name="post">
+                    {{ g.course_form.id(type = 'hidden', value=var.id) }}
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary" value="save">Delete</button>
+                    {{ g.course_form.hidden_tag() }}
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+      </div>
+        </div>      
+      </div>
+    </div>

@@ -1,0 +1,100 @@
+    {% if g.user.is_authenticated %}
+    <div class="container">
+    <div class="col-md-12  col-lg-offset-0 text-center">
+        <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-collapse">
+                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                </button>
+                <a class="navbar-brand page-scroll" href="/"><img align="left" src="/static/assets/img/brand.png" width="24px"> Pestoform</a>
+            </div>
+
+          <div class="collapse navbar-collapse" id="nav-collapse">
+            <!-- <ul class="nav navbar-nav"> -->
+
+              <ul class="nav navbar-nav">
+                <li class="{{ 'active' if active_page == 'menu1' else '' }}"><a href="{{ url_for('index') }}"><i class="fa fa-plus sr-add-meeting"></i> New</a></li>
+                     {% if session['bc_type'] == 'fi' %}
+                 <li class="{{ 'active' if active_page == 'menu2' else '' }}"><a href="{{ url_for('view_feedback', url_string=session['bc_url'], page=session['bc_page']) }}">Dashboard</a></li>
+                     {% elif session['bc_type'] == 'fo' %}
+                 <li class="{{ 'active' if active_page == 'menu2' else '' }}"><a href="{{ url_for('view_folder', page=session['bc_page']) }}">Dashboard</a></li>
+                     {% else %}
+                 <li class="{{ 'active' if active_page == 'menu2' else '' }}"><a href="{{ url_for('view') }}">Dashboard</a></li>
+                     {% endif %}
+            </ul>
+         <ul class="nav navbar-nav navbar-right">  
+             <li>
+                
+                <form class="navbar-form" action='/search' method="post" name="post"  role="search">
+                <div class="input-group">
+
+                <div class="form-group">
+                {{ g.search_form.search(placeholder="Search feedback", class="form-control") }}
+                </div>
+                <div class="input-group-btn">
+                    <button class="btn btn-default btn-sm" type="submit"><span><i class="glyphicon glyphicon-search"></i></span></button>
+                    {{ g.search_form.hidden_tag() }}
+                </div>
+                </div>
+                </form>
+                
+             </li>
+               <li class="dropdown, {{ 'active' if active_page == 'menu5' else '' }}">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Stuff <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+        <li><a href="{{ url_for('user', nickname=g.user.nickname) }}">Hi, {{ g.user.nickname }}!</a></li>
+        <li class="divider"></li>
+          <li><a href="/stuff#faq" onclick="location.reload()">FAQ </a></li>
+          <li><a href="/stuff#help" onclick="location.reload()">Help </a></li>
+          <li><a href="/stuff#privacy" onclick="location.reload()">Privacy</a></li>
+          <li><a href="/stuff#tos" onclick="location.reload()">Terms of Services</a></li>
+            <!-- <li><a href="#">Blog</a></li> -->
+            <li><a href="/stuff#contact" onclick="location.reload()">Contact us</a></li>
+            <li><a href="/stuff#about" onclick="location.reload()">About us</a></li>
+        </ul>
+             </li>
+              </ul>
+              </div>
+
+            </div>
+      </nav>
+        </div>
+      </div>
+    {% else %}
+    <nav id="mainNav" class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
+                </button>
+                <div><a class="navbar-brand page-scroll" href="#page-top"><img align="left" src="/static/assets/img/brand.png" width="24px"> Pestoform</a>
+                    </div>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a class="page-scroll" href="{{ url_for('index') }}#about">About</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="{{ url_for('index') }}#works">How it works</a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('new_form') }}">New Form</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="index#login">Login/Register</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="{{ url_for('index') }}#contact">Stuff</a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.navbar-collapse -->
+        </div>
+        <!-- /.container-fluid -->
+    </nav>
+    {% endif %}

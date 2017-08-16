@@ -1,0 +1,65 @@
+<!-- extend base layout -->
+{% extends "anon_base.html" %}
+{% block content %}
+<br><br>
+{% if meeting.close_stat == 2 %}
+<div class="divider-5"></div>
+<p>The response on this form is no longer visible</p>
+{% else%}
+<p style="font-size:110%; color:#444444">Feedback request: {{ meeting.title }}</p>
+{% if meeting.prompt %}
+<p style="font-size:100%; color:#666666">{{ meeting.prompt }}</p>
+{% endif %}
+
+<div class="form-group">
+<form class="form" action="/muddies" method="post" role="form" enctype="multipart/form-data">
+    
+<div class="container">
+<div class="col-md-12 col-sm-12 col-xs-12">
+{% for item in muddies %}
+        <div class="panel-custom">
+        {{ item.body }}
+        <div class="pull-right" name="vote-{{ item.id }}">
+            <span class="badge">{{ item.like_count }}</span>
+            {% if meeting.close_stat == 0 %}
+            <label class="btn btn-primary btn-xs active">
+                <input type="checkbox" name = "muddy_id" unchecked value="{{ item.id }}" autocomplete="off"> +1
+            </label>
+            {% endif %}
+        </div>
+    </div>
+{% endfor %}
+
+    </div>
+    </div>
+{% if meeting.close_stat == 0 %}
+        {{ g.muddy_form.meeting_id(type = 'hidden',value=meeting.id) }}
+<div class="container">
+    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+    {{ g.muddy_form.body(id="text", maxlength="300", rows=3, class="form-control", placeholder="Please provide your comment and/or upvote previous comment(s)") }}
+        {# {{ g.muddy_form.body(type="hidden") }} #}
+        <div>
+            <button type="submit" class="btn btn-primary" value="save">Post new feedback</button>
+            {{ g.muddy_form.hidden_tag() }}
+            <span class="form-control-static pull-right"><div id="count_message"></div></span>
+        </div>
+        </div>
+    </div>
+{% endif %}
+</form>
+</div>
+
+        <script>
+    var text_max = 300;
+$('#count_message').html(text_max + ' characters remaining');
+
+$('#text').keyup(function() {
+  var text_length = $('#text').val().length;
+  var text_remaining = text_max - text_length;
+  
+  $('#count_message').html(text_remaining + ' characters remaining');
+});
+    
+        </script>
+{% endif %}
+{% endblock %}

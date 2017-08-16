@@ -1,0 +1,53 @@
+{% extends "landing.html" %}
+{% block content %}
+      
+<div class="container">
+    <div class="col-sm-4"  style="background-color:#F8F9F9;">
+
+
+    <div>
+          <br><br>
+          <a href="{{ url_for('oauth_authorize', provider='facebook') }}" class="btn btn-facebook"><i class="fa fa-facebook"></i> | Sign in with Facebook</a>
+   
+
+    </div>
+    <br>
+
+    <div id="my-signin2"></div>
+    <script>
+    function onSuccess(googleUser) {
+  var xhr = new XMLHttpRequest();
+  var id_token = googleUser.getAuthResponse().id_token;
+  console.log('id_token: '+id_token);
+  xhr.open('POST', '/gcallback');
+  xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.onload = function() {
+  window.location.href='/index';
+  console.log('Signed in as: ' + xhr.responseText);
+  };
+  xhr.send('id_token='+id_token);
+    }
+    function onFailure(error) {
+      console.log(error);
+    }
+    function renderButton() {
+      gapi.signin2.render('my-signin2', {
+        'scope': 'profile email',
+        'width': 120,
+        'height': 20,
+        'longtitle': true,
+        'theme': 'dark',
+        'onsuccess': onSuccess,
+        'onfailure': onFailure
+      });
+    }
+    </script>
+    
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+    
+    <br><br>
+
+</div>
+</div>
+{% endblock %}

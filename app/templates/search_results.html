@@ -1,0 +1,20 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+
+{% block content %}
+  <h3>Search results for "{{ query }}":</h3>
+    {% for item in results_muddy %}
+        <span style="font-size:90%; color:#666666"><i class="fa fa-file-text-o" aria-hidden="true"></i> {{ item.meeting.title }}, <i class="fa fa-folder-o" aria-hidden="true"></i> {{ item.meeting.course.title }}</span> |
+        {{ item.body }}<br>
+    {% endfor %}
+    <hr>
+    {% for item in results_meeting %}
+        {{ item.title }} | {{ item.course.title }}
+        {{ item.note }} | {{ item.kwd1}} <br>
+    {% endfor %}
+    {#
+  {% for ... in results %}
+      {% include 'course.html' %}
+  {% endfor %}
+    #}
+{% endblock %}

@@ -1,0 +1,42 @@
+                    {% for meeting in meetings_var.items %}
+                    <div class="panel-custom">
+                        <div class="dropdown">
+                                {% include "meeting_options.html" %}
+                                <a href="{{ url_for('view_feedback', url_string=meeting.url_string) }}"><span style="padding-left:5px"></span>{{ meeting.title }}:
+                                {% if meeting.prompt %}
+                                    <em>{{ meeting.prompt }}</em>
+                                {% endif %}</a>
+                        </div>
+                        <div style="font-size:80%; color:#777777">
+                        {% include 'meeting_times.html' %}
+                            &bull;    
+                        <span style="padding-left:5px"></span><span><i class="fa fa-folder-o" aria-hidden="true"></i> {{ meeting.course.title }}</span>  &bull;
+                        <span style="padding-left:5px"></span><span><i class="fa fa-paper-plane-o" aria-hidden="true"></i> {{ meeting.muddies.count() }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+{# If we have previous meetings #}
+{% if meetings_var.has_prev %}
+    {% if meetings_var == meetings_sorted %}
+        <a href="{{ url_for('view', page=meetings_var.prev_num) }}">
+    {% elif meetings_var == course_meetings %}
+        <a href="{{ url_for('view_folder', page=meetings_var.prev_num) }}">
+    {% endif %}
+
+        &laquo; Previous forms
+    </a>
+{% else %}
+    &laquo; Previous forms
+{% endif %}
+|
+{% if meetings_var.has_next %}
+    {% if meetings_var == meetings_sorted %}
+        <a href="{{ url_for('view', page=meetings_var.next_num) }}">
+    {% elif meetings_var == course_meetings %}
+        <a href="{{ url_for('view_folder', page=meetings_var.next_num) }}">
+    {% endif %}
+        Next forms &raquo;</a>
+{% else %}
+        Next forms &raquo;
+{% endif %}

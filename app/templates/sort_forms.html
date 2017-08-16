@@ -1,0 +1,24 @@
+<!-- <div class="dropdown">   -->
+                        <button class="btn btn-default btn-xs dropdown-toggle" aria-label="form-sort-dd" data-toggle="dropdown" id="#dropdown-forms-sort"  aria-haspopup="true">
+                         <span><i class="fa fa-sort-amount-desc" aria-hidden="true"></i></span> <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdown-forms-sort">
+                            <li class="active">
+                                
+                                <a href="#">{{ session['sorting_type'] }} </a>
+                            </li>
+
+                            <li role="separator" class="divider"></li>
+                            {% for sorting_id in range(len_SORTING_TYPE) %}
+                                {% if session['sorting_id'] != sorting_id %}
+                                <li>
+                                    <form action='/view' method="post" id ="form-sort-{{ sorting_id }}" name="post">
+                                    <input type="hidden" name="sorting_id"  value="{{ sorting_id }}">
+                                    </form>
+                                <a href="#" onclick="document.getElementById('form-sort-{{ sorting_id }}').submit()">
+                                {{ SORTING_TYPE[sorting_id] }}</a>
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+<!-- </div> -->

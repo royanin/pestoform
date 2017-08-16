@@ -1,0 +1,92 @@
+<!-- extend base layout -->
+{% extends "base.html" %}
+{% set active_page = "menu2" %}
+
+{% block content %}
+<form action='/view_folder' method="post" id ="select-folder-{{ meeting.course.id }}" name="post">
+    <input type="hidden" name="course_id"  value="{{ meeting.course.id }}">
+</form>
+<div class="container">
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="pull-left">
+        <a href="/view">All forms</a>
+        <span style="padding-left:5px"></span>&raquo;<span style="padding-left:10px"></span>
+        <a href="#" onclick="document.getElementById('select-folder-{{ meeting.course.id }}').submit()">
+                                {{ meeting.course.title }}</a>
+        <span>{% include "select_folder.html" %}</span>
+        <span style="padding-left:5px"></span>&raquo;<span style="padding-left:10px"></span>
+        <span><i class="fa fa-file-text-o" aria-hidden="true"></i></span>&nbsp;{{ meeting.title }}
+    </div>
+
+    <div class="pull-right">
+        {% with var = meeting.course %}
+        {% include 'course_options.html' %}
+        {% endwith %}
+    </div>
+</div>
+</div>
+
+<br><br>
+<div class="container">
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="panel-custom">
+        <div class="dropdown">{% include "meeting_options.html" %}
+        <span style="padding-left:5px"></span>{{ meeting.title }}: 
+                            {% if meeting.prompt %}
+                                <em>{{ meeting.prompt }}</em>
+                            {% endif %}
+        </div>
+        <div style="font-size:80%; color:#777777">
+            {% include 'meeting_times.html' %}
+        </div>
+        {% if meeting.note != None %}
+            <em>Note: </em>{{ meeting.note }}
+        {% endif %}
+    </div>
+    <div style="font-size:90%; color:#666666">
+        {% if muddies_total != 0 %}
+        <br>Feedback for <em>{{ meeting.title }}:</em>
+        {% else %}
+        <br><em>{{ meeting.title }}</em> has no feedback yet
+        {% endif %}
+    </div>
+    <div>
+                  {#  {% if muddies_total >= 0 %}
+                        {{ muddies_total }} #}
+                        {% for muddy in meeting_muddies.items %}
+                        <div class="panel-custom">
+                            {{ muddy.body }}<br>
+                            <span style="font-size:80%; color:#777777">{{ muddy.like_count }} <i class="fa fa-heart-o" aria-hidden="true"></i></span>
+                            {% with var = muddy %}
+                            <button class="btn btn-xs btn-default" aria-label="delete-muddy-modal" data-toggle="modal" data-target="#delete-muddy-modal-{{ muddy.id }}">
+                            <span><i class="fa fa-trash-o" aria-hidden="true"></i></span>
+                            </button>
+                            {% include 'delete_muddy_modal.html' %}
+                            {% endwith %}
+
+                        </div>
+                        {% endfor %}
+                {#    {% else %}
+                        <p><br>No feedback yet<br></p>
+                    {% endif %} #}
+    </div>
+
+    <div>
+     {% if meeting_muddies.has_prev or meeting_muddies.has_next %}
+            {% if meeting_muddies.has_prev %}
+                <a href="{{ url_for('view_feedback', url_string=meeting.url_string, page=meeting_muddies.prev_num) }}"> &laquo; Previous</a>
+            {% else %}
+                &laquo; Previous
+            {% endif %}
+            |
+            {% if meeting_muddies.has_next %}
+                <a href="{{ url_for('view_feedback', url_string=meeting.url_string, page=meeting_muddies.next_num) }}"> Next &raquo;</a>
+            {% else %}
+                Next &raquo;
+            {% endif %}
+    {% endif %}
+            
+</div>
+</div>
+</div>
+{% endblock %}

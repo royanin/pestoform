@@ -1,0 +1,10 @@
+Dear {{ email }},
+
+
+Thank you for your interest in Pestoform!
+
+We'll let you know when we are ready for further testing.
+
+
+Regards,
+The Pestoform admin

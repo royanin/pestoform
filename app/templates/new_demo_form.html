@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+    <div class="col-sm-6 col-sm-offset-3 text-center">
+        <div class="divider-5"></div>
+        <h2>Create a new form</h2>
+        {% from "custom_macros.html" import render_field_with_bootstrap_errors %}
+        <form action='/new_demo_form' method="post" name="post" enctype="multipart/form-data" >
+            <div class="form-group">
+                {{ g.demo_form.test_code_lite(id="test_code_lite", maxlength="140", class="form-control", placeholder="Please type in your test code") }}
+            </div>
+            <div class="form-group">
+                {{ render_field_with_bootstrap_errors(g.demo_form.title, id="entry-title", maxlength="140", class="form-control", placeholder="Form title (required)") }}
+            </div>
+            <div class="form-group">
+                {{ g.demo_form.prompt(id="entry-prompt", maxlength="140", class="form-control", placeholder="Your question/instruction to respondants") }}
+            </div>
+            <div class="form-group">
+                {{ g.demo_form.demo_email(id="entry-email", maxlength="140", class="form-control", placeholder="Email (required)") }}
+            </div>
+
+            <button type="submit" class="btn btn-sm btn-primary" value="save">Create new form</button>
+            {{ g.demo_form.hidden_tag() }}
+            
+        </form>
+        
+        {% include 'eoi.html'%}
+    </div>
+    </div>
+{% endblock %}

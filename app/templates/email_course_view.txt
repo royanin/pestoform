@@ -1,0 +1,7 @@
+Dear {{ user.email }},
+
+This is just a test email about your course {{ course.title }}!
+
+Regards,
+
+The Pestoform admin
