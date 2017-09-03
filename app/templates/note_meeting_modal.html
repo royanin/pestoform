@@ -13,7 +13,7 @@
     <div class="modal-body">
                 <div class="form-group">
                     <div class="col-sm-12">
-                    {{ g.meeting_form.note(id="note-text", rows=3,  maxlength="300", class="form-control", placeholder="Add a note", value= var.note ) }}
+                    {{ g.meeting_form.note(id="note-text-{{ var.id }}", rows=3,  maxlength="500", class="form-control", placeholder="Add a note", value= var.note ) }}
                     </div>
                 </div>
 
@@ -30,6 +30,18 @@
                   {{ g.meeting_form.hidden_tag() }}
                     
             </div>
+                    <script>
+    var text_max = 500;
+$('#count_message').html(text_max + ' characters remaining');
+
+$('#note-text-"{{ var.id }}"').keyup(function() {
+  var text_length = $('#note-text-"{{ var.id }}"').val().length;
+  var text_remaining = text_max - text_length;
+  
+  $('#count_message').html(text_remaining + ' characters remaining');
+});
+    
+        </script>
         </div>
         
       </div>
@@ -37,15 +49,3 @@
         </div>      
       </div>
     </div>
-        <script>
-    var text_max = 300;
-$('#count_message').html(text_max + ' characters remaining');
-
-$('#note-text').keyup(function() {
-  var text_length = $('#note-text').val().length;
-  var text_remaining = text_max - text_length;
-  
-  $('#count_message').html(text_remaining + ' characters remaining');
-});
-    
-        </script>

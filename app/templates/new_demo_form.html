@@ -10,21 +10,34 @@
                 {{ g.demo_form.test_code_lite(id="test_code_lite", maxlength="140", class="form-control", placeholder="Please type in your test code") }}
             </div>
             <div class="form-group">
-                {{ render_field_with_bootstrap_errors(g.demo_form.title, id="entry-title", maxlength="140", class="form-control", placeholder="Form title (required)") }}
+                {{ render_field_with_bootstrap_errors(g.demo_form.title, id="entry-title", maxlength="100", class="form-control", placeholder="Form title (required, 100 chars. max.)") }}
             </div>
             <div class="form-group">
-                {{ g.demo_form.prompt(id="entry-prompt", maxlength="140", class="form-control", placeholder="Your question/instruction to respondants") }}
+                <span class="form-control-static pull-right"><div style="font-size:90%; color:#777777" id="count_message2"></div></span>
+                {{ g.demo_form.prompt(id="entry-prompt", maxlength="300", class="form-control", placeholder="Your question/instruction to respondants") }}
             </div>
             <div class="form-group">
-                {{ g.demo_form.demo_email(id="entry-email", maxlength="140", class="form-control", placeholder="Email (required)") }}
+                {{ g.demo_form.demo_email(id="entry-email", maxlength="100", class="form-control", placeholder="Email (required)") }}
             </div>
 
             <button type="submit" class="btn btn-sm btn-primary" value="save">Create new form</button>
             {{ g.demo_form.hidden_tag() }}
-            
+            {% include "accept_tos.html" %}
         </form>
-        
+        <hr>
         {% include 'eoi.html'%}
     </div>
     </div>
+    <script>
+    var text_max = 300;
+$('#count_message2').html(text_max + ' characters remaining');
+
+$('#entry-prompt').keyup(function() {
+  var text_length = $('#entry-prompt').val().length;
+  var text_remaining = text_max - text_length;
+  
+  $('#count_message2').html(text_remaining + ' characters remaining');
+});
+    
+        </script>
 {% endblock %}

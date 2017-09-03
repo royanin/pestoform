@@ -4,6 +4,7 @@
 {% block content %}
 
 <h4>Thank you. Your response has been submitted!</h4>
+<p><a href="{{ url_for('m', url_string=meeting.url_string) }}">Click here</a> to see all feedback.</p>
 
 
 {% endblock %}

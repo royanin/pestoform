@@ -11,9 +11,9 @@
         {% endif %}
       <div class="form-group">
             {% if course %}
-                {{ g.course_form.title(id="entry-title", maxlength="140", class="form-control", placeholder="Title:", value=course.title) }}
+                {{ g.course_form.title(id="entry-title", maxlength="100", class="form-control", placeholder="Title: (required, 100 chars. max.)", value=course.title) }}
             {% else %}
-                {{ g.course_form.title(id="entry-title", maxlength="140", class="form-control", placeholder="Folder title (required)") }}
+                {{ g.course_form.title(id="entry-title", maxlength="100", class="form-control", placeholder="Folder title (required, 100 chars. max.)") }}
             {% endif %}
        </div> 
        <div class="form-group">

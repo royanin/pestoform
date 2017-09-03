@@ -1,0 +1,5 @@
+*.pyc
+*.pyo
+search.db
+instances.py
+env

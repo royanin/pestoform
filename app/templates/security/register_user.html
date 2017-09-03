@@ -2,35 +2,31 @@
 {% extends "landing.html" %}
 {% block content %}
 
-{% include "security/social.html" %}
+{# {% include "security/social.html" %} #}
 
-{# {% block content %}
-{% from "security/_macros.html" import render_field_with_errors, render_field %}
-{% include "security/_messages.html" %} #}
 <div class="container">
         <div class="row">
-            <!-- <div class="col-sm-4 col-lg-offset-2 text-center"></div> -->
                 <div class="col-lg-4 col-lg-offset-4 text-center">
-                    <!-- <h2 class="section-heading">or</h2> -->
                     <h3> Register with email and password </h3>
-<form action="{{ url_for_security('register') }}" method="POST" name="register_user_form">
+{% from "custom_macros.html" import render_field_with_bootstrap_errors %}
+{% include "security/_messages.html" %}
+<form action='{{ url_for_security("register",next="register")+"#login" }}' method="POST" name="register_user_form">
   {{ register_user_form.hidden_tag() }}
     <div class="form-group">
-    {{ register_user_form.email(maxlength="140", class="form-control", placeholder="Email") }}
-  {# {{ render_field_with_errors(register_user_form.email) }} #}
+        {{ render_field_with_bootstrap_errors(register_user_form.email,maxlength="140", class="form-control", placeholder="Email") }}
     </div>
     <div class="form-group">
-    {{ register_user_form.password(maxlength="140", class="form-control", placeholder="Password") }}
-  {# {{ render_field_with_errors(register_user_form.password) }} #}
+        {{ render_field_with_bootstrap_errors(register_user_form.password, maxlength="32", class="form-control", placeholder="Password") }}
+        
     </div>
     <div class="form-group">
   {% if register_user_form.password_confirm %}
-        {{ register_user_form.password_confirm(maxlength="140", class="form-control", placeholder="Retype password") }}
-    {# {{ render_field_with_errors(register_user_form.password_confirm) }} #}
+    {{ render_field_with_bootstrap_errors(register_user_form.password_confirm, maxlength="32", class="form-control", placeholder="Retype password") }}
   {% endif %}
     </div>
     
     <button type="submit" class="btn btn-sm btn-primary" value="save">Register</button>
+    {% include "accept_tos.html" %}
   {# {{ render_field(register_user_form.submit) }} #}
 </form>
 <br>

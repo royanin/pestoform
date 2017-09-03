@@ -5,7 +5,17 @@
     <!-- <nav bar> -->
     {% include "nav.html" %}
       <div class="container">
-          {# <div class="col-lg-8  col-lg-offset-2 text-center">
+           <div class="col-lg-8  col-lg-offset-2 text-center">
+            {# {%- with messages = get_flashed_messages(with_categories=true) -%}
+                {% if messages %}
+                    <div class="flashes">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible" role="alert">{{ message }}</div>
+                    {% endfor %}
+                    </div>
+               {% endif %}
+            {%- endwith %}   #}
+            {#
             {% with messages = get_flashed_messages() %}
                 {% if messages %}
                     <ul class=flashes>
@@ -20,8 +30,8 @@
                     </ul>
                 {% endif %}
             {% endwith %}
-
-          </div> #}
+               #}
+          </div>
           <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
           {% block content %}{% endblock %}
         </div>

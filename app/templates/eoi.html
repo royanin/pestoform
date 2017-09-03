@@ -2,9 +2,9 @@
         <form class='form-inline'  action='/get_test_code' method="post" name="post" enctype="multipart/form-data" >
             <div> If you don't have a test code and would like to be a beta tester, let us know!</div><br>
             <div class="form-group">
-                {{ g.wantbeta_form.email(id="email", maxlength="140", class="form-control", placeholder="Email (required)") }}
+                {{ g.wantbeta_form.email(id="email", maxlength="100", class="form-control", placeholder="Email (required)") }}
             </div>
             <button type="submit" class="btn btn-sm btn-primary" value="save">Proceed</button>
             {{ g.wantbeta_form.hidden_tag() }}
-            
+            {% include "accept_tos.html" %}
         </form>

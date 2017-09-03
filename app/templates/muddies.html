@@ -35,22 +35,24 @@
 {% if meeting.close_stat == 0 %}
         {{ g.muddy_form.meeting_id(type = 'hidden',value=meeting.id) }}
 <div class="container">
-    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-    {{ g.muddy_form.body(id="text", maxlength="300", rows=3, class="form-control", placeholder="Please provide your comment and/or upvote previous comment(s)") }}
-        {# {{ g.muddy_form.body(type="hidden") }} #}
+    <div class="row">
+    <div class="col-lg-8 col-lg-offset-2">
+    <span class="form-control-static pull-right"><div id="count_message"></div></span>
+    {{ g.muddy_form.body(id="text", maxlength="700", rows=6, class="form-control", placeholder="Please provide your comment and/or upvote previous comment(s)") }}
         <div>
-            <button type="submit" class="btn btn-primary" value="save">Post new feedback</button>
+            <button type="submit" class="btn btn-primary pull-right" value="save">Post new feedback</button>
             {{ g.muddy_form.hidden_tag() }}
-            <span class="form-control-static pull-right"><div id="count_message"></div></span>
         </div>
+        {% include "accept_tos.html" %}
         </div>
+    </div>
     </div>
 {% endif %}
 </form>
 </div>
 
         <script>
-    var text_max = 300;
+    var text_max = 700;
 $('#count_message').html(text_max + ' characters remaining');
 
 $('#text').keyup(function() {

@@ -4,7 +4,7 @@
 {% block content %}
 
 <h4>We couldn't record any comment/upvote</h4>
-<p>If this was by mistake, <a href="{{ config.SITE }}/m/{{ session['url_string'] }}">please try again.</a></p>
+<p>If this was by mistake, <a href="{{ url_for('m', url_string=meeting.url_string) }}">please try again.</a></p>
 
 
 {% endblock %}

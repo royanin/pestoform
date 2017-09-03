@@ -11,13 +11,9 @@
                     <!-- <h2 class="section-heading">or</h2> -->
                     <h3>Login with email and password </h3>
 {% from "custom_macros.html" import render_field_with_bootstrap_errors %}
+{# {% include "security/_messages.html" %} #}
 <form action='{{ url_for_security("login",next="login")+"#login" }}' method="POST" name="login_user_form">
   {{ login_user_form.hidden_tag() }}
-    {# <div class="form-group">
-    {{ login_user_form.test_code(class="form-control", placeholder="Please enter your test code") }}
-    {{ render_field_with_errors(login_user_form.test_code,  placeholder="test code") }}
-    </div> #}
-    
     <div class="form-group">
     {{ render_field_with_bootstrap_errors(login_user_form.email, maxlength="140", class="form-control", placeholder="Email") }}
     </div>
@@ -32,7 +28,8 @@
     </div>
   {# {{ render_field(login_user_form.next) }} #}
 
-  <button type="submit" class="btn btn-sm btn-primary" value="save">Login</button>{# {{ render_field(login_user_form.submit) }} #}
+  <button type="submit" class="btn btn-sm btn-primary" value="save">Login</button>
+    {# {{ render_field(login_user_form.submit) }} #}
 
     </form>
 <!-- </div>

@@ -46,12 +46,8 @@
         <li><a href="{{ url_for('user', nickname=g.user.nickname) }}">Hi, {{ g.user.nickname }}!</a></li>
         <li class="divider"></li>
           <li><a href="/stuff#faq" onclick="location.reload()">FAQ </a></li>
-          <li><a href="/stuff#help" onclick="location.reload()">Help </a></li>
-          <li><a href="/stuff#privacy" onclick="location.reload()">Privacy</a></li>
           <li><a href="/stuff#tos" onclick="location.reload()">Terms of Services</a></li>
-            <!-- <li><a href="#">Blog</a></li> -->
             <li><a href="/stuff#contact" onclick="location.reload()">Contact us</a></li>
-            <li><a href="/stuff#about" onclick="location.reload()">About us</a></li>
         </ul>
              </li>
               </ul>
@@ -98,3 +94,22 @@
         <!-- /.container-fluid -->
     </nav>
     {% endif %}
+      <div class="container">
+           <div class="col-lg-8  col-lg-offset-2 text-center">
+            {%- with messages = get_flashed_messages(with_categories=true) -%}
+                {% if messages %}
+                    <br><br><br>
+                    <div class="flashes">
+                    {% for category, message in messages %}
+                        <div class="alert alert-danger alert-dismissable" role="alert">{{ message }}
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">×</a>
+                        </div>
+                        {# <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button> #}
+                    {% endfor %}
+                    </div>
+               {% endif %}
+            {%- endwith %}   
+          </div>
+      </div>

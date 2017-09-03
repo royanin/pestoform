@@ -12,16 +12,18 @@
         {% endif %}
           <div class="form-group">
             {% if meeting %}
-                {{ g.meeting_form.title(id="entry-title", maxlength="140", class="form-control", placeholder="Title:", value=meeting.title) }}
+                {{ g.meeting_form.title(id="entry-title", maxlength="100", class="form-control", placeholder="Title: (100 chars. max.)", value=meeting.title) }}
             {% else %}
-                {{ g.meeting_form.title(id="entry-title", maxlength="140", class="form-control", placeholder="Form title (required)") }}
+                {{ g.meeting_form.title(id="entry-title", maxlength="100", class="form-control", placeholder="Form title (required, 100 chars. max.)") }}
             {% endif %}
               </div>
           <div class="form-group">
             {% if meeting %}
-                {{ g.meeting_form.prompt(id="entry-prompt", maxlength="100", class="form-control", placeholder="Form prompt:", value=meeting.title) }}
+                <span class="form-control-static pull-right"><div id="count_message4"></div></span>
+                {{ g.meeting_form.prompt(id="entry-prompt-in", maxlength="300", class="form-control", placeholder="Form prompt:", value=meeting.title) }}
             {% else %}
-                {{ g.meeting_form.prompt(id="entry-prompt", maxlength="140", class="form-control", placeholder="Your question/instruction to respondants") }}
+                <span class="form-control-static pull-right"><div id="count_message4"></div></span>
+                {{ g.meeting_form.prompt(id="entry-prompt-in", maxlength="300", class="form-control", placeholder="Your question/instruction to respondants") }}
             {% endif %}
               </div>
             <div class="form-group">
@@ -103,4 +105,17 @@
         <br><br><hr>
                     {% include 'link_new_course.html' %}
     </div>
+        <script>
+    var text_max = 300;
+$('#count_message4').html(text_max + ' characters remaining');
+
+$('#entry-prompt-in').keyup(function() {
+  var text_length = $('#entry-prompt-in').val().length;
+  var text_remaining = text_max - text_length;
+  
+  $('#count_message4').html(text_remaining + ' characters remaining');
+});
+    
+        </script>
+
 {% endblock %}

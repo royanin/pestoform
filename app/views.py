@@ -31,32 +31,6 @@ def load_user(id):
     return User.query.get(int(id))
     
 
-# Create a user to test with
-
-@app.before_first_request
-def create_user():
-    #db.create_all()
-    #user_datastore.create_user(nickname='royanin.qn',email='royanin.qn@gmail.com',password='111111')
-    user = User.query.filter_by(email='royanin.qn@gmail.com').first()
-    if not (user):
-        user_datastore.create_user(email='royanin.qn@gmail.com',password='complex123#')
-        db.session.commit()
-        g.user = User.query.filter_by(email='royanin.qn@gmail.com').first()
-        course1 = Course(title="Uncategorized",level=0)
-        course2 = Course(title="All_demo_forms",level=0)
-        db.session.add(course1)
-        db.session.add(course2)        
-        db.session.commit()
-        g.demo_user_id = g.user.id
-        g.demo_course_id = course2.id
-        print "demo_user_id and demo_course_id: ",g.demo_user_id, g.demo_course_id
-
-    else:
-        g.demo_user_id = user.id
-        demo_course = Course.query.filter_by(user_id=user.id).filter_by(title="All_demo_forms").first()
-        g.demo_course_id = demo_course.id
-        print "demo_user_id and demo_course_id: ",g.demo_user_id, g.demo_course_id
-
  
 @app.before_request
 def before_request():
@@ -772,7 +746,8 @@ def muddies():
                 db.session.commit()
             elif submit_flag == 0:
                 print 'No muddy created...'
-                return render_template('/submitted_empty.html')
+                return render_template('/submitted_empty.html',
+                                       meeting=meeting)
 
 
         else:
@@ -787,7 +762,8 @@ def muddies():
         #flash('Your muddy is now live!')
     #return redirect(url_for('m', url_string=session['url_string']))
     
-    return render_template('/submitted.html')
+    return render_template('/submitted.html',
+                            meeting=meeting)
 
 
 @app.route('/feedback_delete', methods=['GET', 'POST'])
@@ -1013,13 +989,13 @@ def get_test_code():
         wantbeta = Wantbeta.query.filter_by(email=email).first()
         if wantbeta is not None:
             #Send email even if it already exists!
-            eoi_noted(email)
+            eoi_noted(wantbeta.email)
             return render_template('eoi_noted.html')
         else:
-            email = Wantbeta(email)
-            db.session.add(email)
+            wantbeta = Wantbeta(email)
+            db.session.add(wantbeta)
             db.session.commit()
-            eoi_noted(email)
+            eoi_noted(wantbeta.email)
             return render_template('eoi_noted.html')
 
 @app.route('/register_beta', methods=['GET','POST'])
