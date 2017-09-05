@@ -1,5 +1,7 @@
 *.pyc
 *.pyo
 search.db
+db_repository
+tmp
 instances.py
 env
