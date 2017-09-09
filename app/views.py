@@ -596,16 +596,8 @@ def meeting_action_edit():
             
             db.session.commit()
             return ('', 204)
-            #meeting.course_id = g.meeting_form.course_id.data
-            #meeting.prompt = g.meeting_form.prompt.data
-            #meeting.user_id = g.user.id
-            #meeting.close_opt = g.meeting_form.close_opt.data
+
         else:
-            
-            #live_till_hours_total = 30*24*int(g.meeting_form.live_till_month.data) + 24*int(g.meeting_form.live_till_days.data) + int(g.meeting_form.live_till_hours.data)
-            #if live_till_hours_total <= 0:
-                #live_till_hours_total = 14*24
-            #meeting = Meeting(g.meeting_form.title.data,g.meeting_form.course_id.data,g.meeting_form.prompt.data,g.meeting_form.close_opt.data,g.meeting_form.live_till_month.data,g.meeting_form.live_till_days.data,g.meeting_form.live_till_hours.data)
             print "from meeting forms:", g.meeting_form.title.data,g.meeting_form.course_id.data,g.meeting_form.prompt.data,g.meeting_form.close_opt.data,g.meeting_form.live_till_month.data, g.meeting_form.live_till_days.data, g.meeting_form.live_till_hours.data
             meeting = Meeting(g.meeting_form.title.data,g.meeting_form.course_id.data,g.meeting_form.prompt.data,g.meeting_form.close_opt.data,30*24*int(g.meeting_form.live_till_month.data) + 24*int(g.meeting_form.live_till_days.data) + int(g.meeting_form.live_till_hours.data))
             meeting.close_stat = 0
@@ -901,17 +893,14 @@ def edit():
 def search():
     print 'In search:'
     if not g.search_form.validate_on_submit():
-        return redirect(url_for('index'))
-    return redirect(url_for('search_results', query=g.search_form.search.data))
+        return ('Sorry, no results to show!')
+    else:
+        query=g.search_form.search.data
 
-
-@app.route('/search_results/<query>')
-@login_required
-def search_results(query):
-    print 'in search_results'
-    results_muddy = Muddy.query.whoosh_search(query, MAX_SEARCH_RESULTS).all()
-    results_form = Meeting.query.whoosh_search(query, MAX_SEARCH_RESULTS).all()
-    results_folder = Course.query.whoosh_search(query, MAX_SEARCH_RESULTS).all()
+    print 'in search_results', 'query=',query
+    results_muddy = Muddy.query.filter_by(user_id=g.user.id).whoosh_search(query, MAX_SEARCH_RESULTS).all()
+    results_form = Meeting.query.filter_by(user_id=g.user.id).whoosh_search(query, MAX_SEARCH_RESULTS).all()
+    results_folder = Course.query.filter_by(user_id=g.user.id).whoosh_search(query, MAX_SEARCH_RESULTS).all()
     return render_template('search_results.html',
                            query=query,
                            results_muddy=results_muddy,

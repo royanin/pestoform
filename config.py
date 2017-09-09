@@ -18,6 +18,7 @@ SECURITY_EMAIL_SENDER = ENV_VAR['MAIL_USERNAME']
 SECURITY_MSG_LOGIN = "",""
 
 SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
+SQLALCHEMY_TRACK_MODIFICATIONS = True
 WHOOSH_BASE = os.path.join(basedir, 'search.db')
 
 #Social Login
