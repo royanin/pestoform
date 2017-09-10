@@ -5,7 +5,4 @@ db_repository
 tmp
 instances.py
 env
-migrations
 old_data
-seed_db.py
-unused_files
