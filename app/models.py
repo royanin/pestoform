@@ -15,7 +15,7 @@ else:
     import flask_whooshalchemy as whooshalchemy
 
 roles_users = db.Table('roles_users',
-        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
+        db.Column('reguser_id', db.Integer(), db.ForeignKey('reguser.id')),
         db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
 
 class Role(db.Model, RoleMixin):
@@ -23,33 +23,33 @@ class Role(db.Model, RoleMixin):
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
 
-class User(db.Model, UserMixin):
-    #__tablename__ = 'users'
+class Reguser(db.Model, UserMixin):
+    #__tablename__ = 'regusers'
     id = db.Column(db.Integer, primary_key=True)
     #social_id = db.Column(db.String(64), nullable=False, unique=True)
     social_nw = db.Column(db.String(64))
     nickname = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(100), index=True, nullable=True, unique=True)
     password = db.Column(db.String(255), nullable=True)
-    courses = db.relationship('Course', backref='user',lazy='dynamic', cascade="all, delete-orphan")
-    all_meetings = db.relationship('Meeting', backref='user', lazy='dynamic', cascade="all, delete-orphan")
-    all_muddies = db.relationship('Muddy', backref='user', lazy='dynamic', cascade="all, delete-orphan")
+    courses = db.relationship('Course', backref='reguser',lazy='dynamic', cascade="all, delete-orphan")
+    all_meetings = db.relationship('Meeting', backref='reguser', lazy='dynamic', cascade="all, delete-orphan")
+    all_muddies = db.relationship('Muddy', backref='reguser', lazy='dynamic', cascade="all, delete-orphan")
     active = db.Column(db.Boolean())
     last_seen = db.Column(db.DateTime)
     affiliation = db.Column(db.String(100))
-    roles = db.relationship('Role', secondary=roles_users,backref=db.backref('users', lazy='dynamic'))
+    roles = db.relationship('Role', secondary=roles_users,backref=db.backref('regusers', lazy='dynamic'))
     confirmed_at = db.Column(db.DateTime)
     
 
     
     @staticmethod
     def make_unique_nickname(nickname):
-        if User.query.filter_by(nickname=nickname).first() is None:
+        if Reguser.query.filter_by(nickname=nickname).first() is None:
             return nickname
         version = 2
         while True:
             new_nickname = nickname + str(version)
-            if User.query.filter_by(nickname=new_nickname).first() is None:
+            if Reguser.query.filter_by(nickname=new_nickname).first() is None:
                 break
             version += 1
         return new_nickname
@@ -75,7 +75,7 @@ class User(db.Model, UserMixin):
 
 
     def __repr__(self):
-        return '<User %r>' % (self.nickname)
+        return '<Reguser %r>' % (self.nickname)
 
 class Course(db.Model):
     __searchable__ = ['title','sbj1', 'sbj2', 'sbj3']
@@ -91,7 +91,7 @@ class Course(db.Model):
     #live_till =  db.Column(db.DateTime) #0: datetime- 6-months -- the course will be archived after that, 1: never, 2: now 3: 1 week, 4: 3-months, 5: year
     live_stat = db.Column(db.Boolean) #True:live, False:archived
     #del_stat = db.Column(db.Boolean) 
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    reguser_id = db.Column(db.Integer, db.ForeignKey('reguser.id', ondelete='CASCADE'), nullable=False)
     meetings = db.relationship('Meeting', backref='course', lazy='dynamic', cascade="all, delete-orphan")
     note = db.Column(db.String(500))
 
@@ -100,7 +100,7 @@ class Course(db.Model):
         self.timestamp = datetime.utcnow()
         self.live_stat = True
         #self.live_span = ...
-        self.user_id = g.user.id
+        self.reguser_id = g.reguser.id
 
     def __repr__(self):
         return '<Course %r>' % self.title
@@ -111,7 +111,7 @@ class Meeting(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id', ondelete='CASCADE'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    reguser_id = db.Column(db.Integer, db.ForeignKey('reguser.id', ondelete='CASCADE'), nullable=False)
     demo_email = db.Column(db.String(100), db.ForeignKey('demo.email', ondelete='CASCADE'), nullable=False)
     title = db.Column(db.String(100))  #a tweet length
     type_meeting = db.Column(db.Integer) #0: class, 1: seminar 2: meeting
@@ -148,7 +148,7 @@ class Muddy(db.Model):
     like_count = db.Column(db.Integer)
     timestamp = db.Column(db.DateTime)
     meeting_id = db.Column(db.Integer, db.ForeignKey('meeting.id', ondelete='CASCADE'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    reguser_id = db.Column(db.Integer, db.ForeignKey('reguser.id', ondelete='CASCADE'), nullable=False)
     demo_email = db.Column(db.String(100), db.ForeignKey('demo.email', ondelete='CASCADE'), nullable=False)
 
     def __init__(self,body,meeting_id,like_count):

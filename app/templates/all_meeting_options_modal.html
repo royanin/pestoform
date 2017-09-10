@@ -29,7 +29,7 @@
                         {% if session['course_num'] %}
                       <option value={{ session['course_num'] }}> {{ session['course_title'] }}</option>
                         {% endif %}
-                    {% for item in g.user.courses %}
+                    {% for item in g.reguser.courses %}
                         {% if item.id != session['course_num'] %}
                       <option value={{ item.id }}> {{ item.title }}</option>
                         {% endif %}

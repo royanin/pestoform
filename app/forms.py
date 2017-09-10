@@ -3,9 +3,6 @@ from flask_wtf import Form
 from wtforms import StringField, IntegerField, BooleanField, TextAreaField, HiddenField, validators
 from wtforms.validators import DataRequired, Length
 from wtforms.fields.html5 import EmailField
-#from flask_security.forms import RegisterForm
-#from .models import Role, User, Connection, Course, Meeting, Muddy
-#from app import app, db
 
     
 class LoginForm(Form):
@@ -30,8 +27,8 @@ class EditForm(Form):
             return False
         if self.nickname.data == self.original_nickname:
             return True
-        user = User.query.filter_by(nickname=self.nickname.data).first()
-        if user is not None:
+        reguser = Reguser.query.filter_by(nickname=self.nickname.data).first()
+        if reguser is not None:
             self.nickname.errors.append('This nickname is already in use. Please choose another one.')
             return False
         return True

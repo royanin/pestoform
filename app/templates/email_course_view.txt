@@ -1,4 +1,4 @@
-Dear {{ user.email }},
+Dear {{ reguser.email }},
 
 This is just a test email about your course {{ course.title }}!
 

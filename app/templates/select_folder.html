@@ -10,7 +10,7 @@
                             </li>
 
                             <li role="separator" class="divider"></li>
-                            {% for course in g.user.courses %}
+                            {% for course in g.reguser.courses %}
                                 {% if course.id != session['course_num'] %}
                                 <li>
                                 <form action='/view_folder' method="post" id ="select-folder-{{ course.id }}" name="post">

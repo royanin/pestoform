@@ -23,16 +23,16 @@ def send_email(subject, sender, recipients, text_body, html_body):
     msg.html = html_body
     send_async_email(app, msg)
 
-def course_view(user,course):
+def course_view(reguser,course):
     print 'Hi, this is emails.py course_view'
-    send_email(#"Hi %s !" % user.email,
+    send_email(#"Hi %s !" % reguser.email,
                "Hello from Pestoform!",
                ADMINS[0],
-               [user.email],
+               [reguser.email],
                render_template("email_course_view.txt",
-                               user=user, course=course),
+                               reguser=reguser, course=course),
                render_template("email_course_view.html",
-                               user=user, course=course))
+                               reguser=reguser, course=course))
 
 
 def form_open(email,meeting):

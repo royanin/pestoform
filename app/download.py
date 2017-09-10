@@ -6,11 +6,11 @@ from config import ADMINS, DOWNLOAD_FOLDER
 from app import app
 
 
-def prep_dl(user,course):
-    print user.email, course.title
-    #print 'Hi {}, this is the course content for {}'.format(user.nickname, course.title)
-    with open(DOWNLOAD_FOLDER+'cc_'+user.nickname+'_'+course.title+'.csv','w+') as file:
-        file.write('Hello there!,{}, Course {}'.format(user.email,course.title))
+def prep_dl(reguser,course):
+    print reguser.email, course.title
+    #print 'Hi {}, this is the course content for {}'.format(reguser.nickname, course.title)
+    with open(DOWNLOAD_FOLDER+'cc_'+reguser.nickname+'_'+course.title+'.csv','w+') as file:
+        file.write('Hello there!,{}, Course {}'.format(reguser.email,course.title))
 
-    filename = 'cc_'+user.nickname+'_'+course.title+'.csv'
+    filename = 'cc_'+reguser.nickname+'_'+course.title+'.csv'
     return(filename)

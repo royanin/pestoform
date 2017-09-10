@@ -7,7 +7,7 @@ from dateutil import parser
 import pytz
 from app import app, db, lm #, oid
 from .forms import LoginForm, EditForm, CourseForm, MeetingForm, SearchForm, ChangeIndexForm, MuddyForm, DemoForm, WantbetaForm, TestcodeForm
-from .models import Role, User, Course, Meeting, Muddy, Demo, Wantbeta
+from .models import Role, Reguser, Course, Meeting, Muddy, Demo, Wantbeta
 #from .emails import follower_notification
 from config import COURSES_PER_PAGE, MEETINGS_PER_PAGE, FEEDBACK_PER_PAGE, MAX_SEARCH_RESULTS, OAUTH_CREDENTIALS,GOOGLE_CLIENT_ID, SORTING_TYPE
 from .emails import course_view, form_open, eoi_noted
@@ -21,28 +21,28 @@ from sqlalchemy import desc, func, select
 #from flask.ext.social.datastore import SQLAlchemyConnectionDatastore
 
 # Setup Flask-Security
-user_datastore = SQLAlchemyUserDatastore(db, User, Role)
+user_datastore = SQLAlchemyUserDatastore(db, Reguser, Role)
 #connection_datastore = SQLAlchemyConnectionDatastore(db, Connection)
 security = Security(app, user_datastore)
 #social = Social(app, connection_datastore) 
 
 @lm.user_loader
 def load_user(id):
-    return User.query.get(int(id))
+    return Reguser.query.get(int(id))
     
 
  
 @app.before_request
 def before_request():
-    g.user = current_user
+    g.reguser = current_user
     g.muddy_form = MuddyForm()
     g.demo_form = DemoForm()
     g.wantbeta_form = WantbetaForm()
     g.testcode_form =  TestcodeForm()
     g.GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID
-    if g.user.is_authenticated:
-        g.user.last_seen = datetime.utcnow()
-        db.session.add(g.user)
+    if g.reguser.is_authenticated:
+        g.reguser.last_seen = datetime.utcnow()
+        db.session.add(g.reguser)
         db.session.commit()
         g.search_form = SearchForm()
         g.course_form = CourseForm()
@@ -79,14 +79,14 @@ def oauth_callback(provider):
     if social_id is None or email is None:
         flash('Authentication failed.')
         return redirect(url_for('index'))
-    user = User.query.filter_by(email=email).first()
+    reguser = Reguser.query.filter_by(email=email).first()
 
-    if not user:
-        nickname = User.make_unique_nickname(email.split('@')[0])
-        user = User(password="something_complicated", nickname=nickname, email=email)
-        db.session.add(user)
+    if not reguser:
+        nickname = Reguser.make_unique_nickname(email.split('@')[0])
+        reguser = Reguser(password="something_complicated", nickname=nickname, email=email)
+        db.session.add(reguser)
         db.session.commit()
-    login_user(user, True)
+    login_user(reguser, True)
     return redirect(url_for('index'))
 
 ##Social login using Miguel oauth ends
@@ -119,14 +119,14 @@ def gcallback_request():
             print idinfo['email'], idinfo['name']
             email = idinfo['email']
 
-            user = User.query.filter_by(email=email).first()
+            reguser = Reguser.query.filter_by(email=email).first()
 
-            if not user:
-                nickname = User.make_unique_nickname(email.split('@')[0])
-                user = User(password="something_complicated", nickname=nickname, email=email, social_nw = 'google')
-                db.session.add(user)
+            if not reguser:
+                nickname = Reguser.make_unique_nickname(email.split('@')[0])
+                reguser = Reguser(password="something_complicated", nickname=nickname, email=email, social_nw = 'google')
+                db.session.add(reguser)
                 db.session.commit()
-            login_user(user, True)
+            login_user(reguser, True)
             print '\n\nam I logged in?'
             return redirect(url_for('index'))
         
@@ -135,7 +135,7 @@ def gcallback_request():
         #    raise crypt.AppIdentityError("Wrong hosted domain.")
     except crypt.AppIdentityError:
         # Invalid token
-        userid = idinfo['sub']
+        reguserid = idinfo['sub']
 
     
     #return redirect(url_for('index'))
@@ -165,20 +165,20 @@ def add_course_session():
 @login_required
 def index(page=1):
     
-    if g.user.is_authenticated:
+    if g.reguser.is_authenticated:
         print '\n\n\nrequest headers:',request.headers.get('User-Agent')
         print '\n\n\nrequest headers:',request.remote_addr
         print '\n\n\nrequest headers:',request.environ['REMOTE_ADDR']
         
-        g.user.last_seen = datetime.utcnow()
-        if g.user.nickname is None or g.user.nickname == "":
-            g.user.nickname = User.make_unique_nickname(g.user.email.split('@')[0])
+        g.reguser.last_seen = datetime.utcnow()
+        if g.reguser.nickname is None or g.reguser.nickname == "":
+            g.reguser.nickname = Reguser.make_unique_nickname(g.reguser.email.split('@')[0])
         #print 'Here in index page'
-            print g.user.nickname
-            db.session.add(g.user)
+            print g.reguser.nickname
+            db.session.add(g.reguser)
             db.session.commit()
 
-        if g.user.courses.count() == 0:
+        if g.reguser.courses.count() == 0:
             course = Course(title="Uncategorized",level=0)
             db.session.add(course)
             db.session.commit()
@@ -188,9 +188,7 @@ def index(page=1):
             #print 'initial courses:', None
         else:
             print 'courses exist'          
-        #print '\n\n\n user details:',g.user.nickname,g.user.email,g.user.password, g.user.social_nw
-        #print '\n\nsession:',session
-
+        
         
     if 'course_num' in session:
         course_id = session['course_num']
@@ -200,12 +198,10 @@ def index(page=1):
         course_id = session['course_num']
         
     print 'In index view: course_id:',course_id
-    #courses = g.user.courses.paginate(page, COURSES_PER_PAGE, False)
-    live_courses = g.user.courses.filter_by(live_stat=True)
-    #print courses
+    live_courses = g.reguser.courses.filter_by(live_stat=True)
     course = Course.query.get(course_id)
-    live_num = g.user.courses.filter_by(live_stat=True).count()
-    archived_num = g.user.courses.filter_by(live_stat=False).count()
+    live_num = g.reguser.courses.filter_by(live_stat=True).count()
+    archived_num = g.reguser.courses.filter_by(live_stat=False).count()
         
     if (course):
         session['course_title'] = course.title
@@ -216,13 +212,13 @@ def index(page=1):
     
     return render_template('index.html',
                            title='Home',
-                           user = g.user,
+                           reguser = g.reguser,
                            #form=g.course_form,
                            live_courses=live_courses,
                            live_num=live_num,
                            archived_num=archived_num,
                            #meetings_sorted=meetings_sorted,
-                           courses=g.user.courses,
+                           courses=g.reguser.courses,
                            #course_id = course_id
                            meetings=meetings,
                            timenow=datetime.now(),
@@ -236,15 +232,15 @@ def index(page=1):
 @login_required
 def view(page=1):
     
-    if g.user.is_authenticated:
-        g.user.last_seen = datetime.utcnow()
-        if g.user.nickname is None or g.user.nickname == "":
-            g.user.nickname = User.make_unique_nickname(g.user.email.split('@')[0])
+    if g.reguser.is_authenticated:
+        g.reguser.last_seen = datetime.utcnow()
+        if g.reguser.nickname is None or g.reguser.nickname == "":
+            g.reguser.nickname = Reguser.make_unique_nickname(g.reguser.email.split('@')[0])
         #print 'Here in index page'
-            print g.user.nickname
-            db.session.add(g.user)
+            print g.reguser.nickname
+            db.session.add(g.reguser)
             db.session.commit()
-        print '\n\n\n user details:',g.user.nickname,g.user.email,g.user.password, g.user.social_nw
+        print '\n\n\n user details:',g.reguser.nickname,g.reguser.email,g.reguser.password, g.reguser.social_nw
         print '\n\nsession:',session
 
         
@@ -256,9 +252,7 @@ def view(page=1):
         course_id = session['course_num']
         
     print 'In index view: course_id:',course_id
-    #courses = g.user.courses.paginate(page, COURSES_PER_PAGE, False)
-    live_courses = g.user.courses.filter_by(live_stat=True)
-    #print courses
+    live_courses = g.reguser.courses.filter_by(live_stat=True)
     course = Course.query.get(course_id)
 
     print request.form.get('sorting_id')
@@ -276,28 +270,28 @@ def view(page=1):
         #sorting_id = 1
     if sorting_id == 0:
         print 'In sorting_id 0'
-        meetings_sorted = Meeting.query.filter_by(user_id=g.user.id).order_by(desc(Meeting.timestamp))
+        meetings_sorted = Meeting.query.filter_by(reguser_id=g.reguser.id).order_by(desc(Meeting.timestamp))
     elif sorting_id == 1:
         print 'In sorting_id 1'
-        meetings_sorted = Meeting.query.filter_by(user_id=g.user.id).order_by(Meeting.timestamp)
+        meetings_sorted = Meeting.query.filter_by(reguser_id=g.reguser.id).order_by(Meeting.timestamp)
     elif sorting_id == 2:
-        meetings_sorted = Meeting.query.filter_by(user_id=g.user.id).order_by(Meeting.course_id)
+        meetings_sorted = Meeting.query.filter_by(reguser_id=g.reguser.id).order_by(Meeting.course_id)
     elif sorting_id == 3:
-        meetings_sorted = Meeting.query.filter_by(user_id=g.user.id).order_by(desc(Meeting.course_id))
+        meetings_sorted = Meeting.query.filter_by(reguser_id=g.reguser.id).order_by(desc(Meeting.course_id))
     elif sorting_id == 4:
         stmt = db.session.query(Muddy.meeting_id, func.count('*').label('muddy_count')).group_by(Muddy.meeting_id).subquery()
-        #meetings_sorted = db.session.query(Meeting).filter(Meeting.user_id==g.user.id).outerjoin((stmt,Meeting.id==stmt.c.meeting_id)).order_by(stmt.c.muddy_count.desc())
-        meetings_sorted = Meeting.query.filter(Meeting.user_id==g.user.id).outerjoin((stmt,Meeting.id==stmt.c.meeting_id)).order_by(stmt.c.muddy_count.desc())
+        #meetings_sorted = db.session.query(Meeting).filter(Meeting.reguser_id==g.reguser.id).outerjoin((stmt,Meeting.id==stmt.c.meeting_id)).order_by(stmt.c.muddy_count.desc())
+        meetings_sorted = Meeting.query.filter(Meeting.reguser_id==g.reguser.id).outerjoin((stmt,Meeting.id==stmt.c.meeting_id)).order_by(stmt.c.muddy_count.desc())
     elif sorting_id == 5:
         stmt = db.session.query(Muddy.meeting_id, func.count('*').label('muddy_count')).group_by(Muddy.meeting_id).subquery()
-        #meetings_sorted = db.session.query(Meeting).filter(Meeting.user_id==g.user.id).outerjoin((stmt,Meeting.id==stmt.c.meeting_id)).order_by(stmt.c.muddy_count)
-        meetings_sorted = Meeting.query.filter(Meeting.user_id==g.user.id).outerjoin((stmt,Meeting.id==stmt.c.meeting_id)).order_by(stmt.c.muddy_count)    
+        #meetings_sorted = db.session.query(Meeting).filter(Meeting.reguser_id==g.reguser.id).outerjoin((stmt,Meeting.id==stmt.c.meeting_id)).order_by(stmt.c.muddy_count)
+        meetings_sorted = Meeting.query.filter(Meeting.reguser_id==g.reguser.id).outerjoin((stmt,Meeting.id==stmt.c.meeting_id)).order_by(stmt.c.muddy_count)    
         
     for meet in meetings_sorted:
-        print meet.id, meet.user_id, meet.title, meet.timestamp, meet.muddies.count()
+        print meet.id, meet.reguser_id, meet.title, meet.timestamp, meet.muddies.count()
 
-    live_num = g.user.courses.filter_by(live_stat=True).count()
-    archived_num = g.user.courses.filter_by(live_stat=False).count()
+    live_num = g.reguser.courses.filter_by(live_stat=True).count()
+    archived_num = g.reguser.courses.filter_by(live_stat=False).count()
 
         
     if (course):
@@ -318,13 +312,13 @@ def view(page=1):
     session['bc_url'] = None
     return render_template('view.html',
                            title='Home',
-                           user = g.user,
+                           reguser = g.reguser,
                            #form=g.course_form,
                            live_courses=live_courses,
                            live_num=live_num,
                            archived_num=archived_num,
                            meetings_sorted=meetings_sorted,
-                           courses=g.user.courses,
+                           courses=g.reguser.courses,
                            #course_id = course_id
                            meetings=meetings,
                            SORTING_TYPE=SORTING_TYPE,
@@ -343,9 +337,7 @@ def view_folder(page=1):
     except TypeError:
         course_id = session['course_num']
         #course.title = session['course_title']
-    user = g.user
-    #live_num = user.courses.filter_by(live_stat=True).count()
-    #archived_num = user.courses.filter_by(live_stat=False).count()
+    reguser = g.reguser
     course = Course.query.get(course_id)
 
     session['course_num'] = course.id
@@ -361,8 +353,8 @@ def view_folder(page=1):
     return render_template('view_folder.html',
                            #live_num = live_num,
                            #archived_num = archived_num,
-                           user=user,
-                           courses=user.courses,
+                           reguser=reguser,
+                           courses=reguser.courses,
                            course=course,
                            course_meetings=course_meetings)
     
@@ -449,7 +441,7 @@ def course_delete():
             print 'course is:',int(item), course
             db.session.delete(course)
             db.session.commit()
-            course_uncat = Course.query.filter_by(user_id=g.user.id).filter_by(title="Uncategorized").first()
+            course_uncat = Course.query.filter_by(reguser_id=g.reguser.id).filter_by(title="Uncategorized").first()
             #print course_uncat.id, course_uncat.title
             session['course_num'] =  course_uncat.id
             session['course_title'] = course_uncat.title
@@ -601,7 +593,7 @@ def meeting_action_edit():
             print "from meeting forms:", g.meeting_form.title.data,g.meeting_form.course_id.data,g.meeting_form.prompt.data,g.meeting_form.close_opt.data,g.meeting_form.live_till_month.data, g.meeting_form.live_till_days.data, g.meeting_form.live_till_hours.data
             meeting = Meeting(g.meeting_form.title.data,g.meeting_form.course_id.data,g.meeting_form.prompt.data,g.meeting_form.close_opt.data,30*24*int(g.meeting_form.live_till_month.data) + 24*int(g.meeting_form.live_till_days.data) + int(g.meeting_form.live_till_hours.data))
             meeting.close_stat = 0
-            meeting.user_id = g.user.id
+            meeting.reguser_id = g.reguser.id
             meeting.demo_email = "NA"
             session['course_num'] = meeting.course_id
             
@@ -729,7 +721,7 @@ def muddies():
                 like_count = 0
                 muddy = Muddy(g.muddy_form.body.data,g.muddy_form.meeting_id.data,like_count)
 
-                muddy.user_id = meeting.user_id
+                muddy.reguser_id = meeting.reguser_id
                 muddy.demo_email = meeting.demo_email
                     
                 print muddy
@@ -786,8 +778,8 @@ def dl_csv():
         if (item):
             course = Course.query.get(int(item))
             print 'course is:',int(item), course
-            user = User.query.get(course.user_id)
-            filename = prep_dl(user,course)
+            reguser = Reguser.query.get(course.reguser_id)
+            filename = prep_dl(reguser,course)
             downloads = app.config['DOWNLOAD_FOLDER']
             print downloads, filename
             try:
@@ -809,10 +801,10 @@ def send_course_view():
         if (item):
             course = Course.query.get(int(item))
             print 'course is:',int(item), course
-            user = User.query.get(course.user_id)
-            print  'User is:', user.nickname
-            course_view(user,course)
-            flash('{} details has been sent to {}'.format(course.title,g.user.email))
+            reguser = Reguser.query.get(course.reguser_id)
+            print  'User is:', reguser.nickname
+            course_view(reguser,course)
+            flash('{} details has been sent to {}'.format(course.title,g.reguser.email))
             session['course_num'] = course.id
             session['course_title'] = course.title
             return redirect(url_for('view_folder'))
@@ -829,11 +821,11 @@ def send_form_open():
         if (item):
             meeting = Meeting.query.get(int(item))
             #print ' is:',int(item), course
-            #user = User.query.get(course.user_id)
-            user = g.user
-            print  'User is:', user.nickname
-            form_open(user.email,meeting)
-            #flash('{} details has been sent to {}'.format(meeting.title,g.user.email))
+            #reguser = Reguser.query.get(course.reguser_id)
+            reguser = g.reguser
+            print  'User is:', reguser.nickname
+            form_open(reguser.email,meeting)
+            #flash('{} details has been sent to {}'.format(meeting.title,g.reguser.email))
             return ('', 204)
             
     
@@ -845,46 +837,46 @@ def logout():
 
 @app.route('/google_logout')
 def google_logout():
-    print '\n\n\n\n AAAAAAAAAAAAAAAAAAAAAA', g.user.id, g.user.email, g.user.social_nw
+    print '\n\n\n\n AAAAAAAAAAAAAAAAAAAAAA', g.reguser.id, g.reguser.email, g.reguser.social_nw
     logout_user()
     return redirect(url_for('index'))
 
 
-@app.route('/user/<nickname>')
-@app.route('/user/<nickname>/<int:page>')
+@app.route('/reguser/<nickname>')
+@app.route('/reguser/<nickname>/<int:page>')
 @login_required
-def user(nickname, page=1):
-    user = User.query.filter_by(nickname=nickname).first()
-    print 'the user is:',user
+def reguser(nickname, page=1):
+    reguser = Reguser.query.filter_by(nickname=nickname).first()
+    print 'the user is:',reguser
     print '\n\n\n Here in user page'
-    if user is None:
+    if reguser is None:
         flash('User %s not found.' % nickname)
         return redirect(url_for('index'))
-    courses = user.courses.paginate(page, COURSES_PER_PAGE, False)
+    courses = reguser.courses.paginate(page, COURSES_PER_PAGE, False)
     live_num = courses.query.filter_by(live_stat=True).count()
     archived_num = courses.query.filter_by(live_stat=False).count()
     
     print "In user view"
-    return render_template('user.html',
+    return render_template('reguser.html',
                            live_num = live_num,
                            archived_num = archived_num,
-                           user=user,
+                           reguser=reguser,
                            courses=courses)
 
 @app.route('/edit', methods=['GET', 'POST'])
 @login_required
 def edit():
-    form = EditForm(g.user.nickname)
+    form = EditForm(g.reguser.nickname)
     if form.validate_on_submit():
-        g.user.nickname = form.nickname.data
-        g.user.about_me = form.about_me.data
-        db.session.add(g.user)
+        g.reguser.nickname = form.nickname.data
+        g.reguser.about_me = form.about_me.data
+        db.session.add(g.reguser)
         db.session.commit()
         flash('Your changes have been saved.')
         return redirect(url_for('edit'))
     elif request.method != "POST":
-        form.nickname.data = g.user.nickname
-        form.about_me.data = g.user.about_me
+        form.nickname.data = g.reguser.nickname
+        form.about_me.data = g.reguser.about_me
     return render_template('edit.html', form=form)
 
 
@@ -898,9 +890,9 @@ def search():
         query=g.search_form.search.data
 
     print 'in search_results', 'query=',query
-    results_muddy = Muddy.query.filter_by(user_id=g.user.id).whoosh_search(query, MAX_SEARCH_RESULTS).all()
-    results_form = Meeting.query.filter_by(user_id=g.user.id).whoosh_search(query, MAX_SEARCH_RESULTS).all()
-    results_folder = Course.query.filter_by(user_id=g.user.id).whoosh_search(query, MAX_SEARCH_RESULTS).all()
+    results_muddy = Muddy.query.filter_by(reguser_id=g.reguser.id).whoosh_search(query, MAX_SEARCH_RESULTS).all()
+    results_form = Meeting.query.filter_by(reguser_id=g.reguser.id).whoosh_search(query, MAX_SEARCH_RESULTS).all()
+    results_folder = Course.query.filter_by(reguser_id=g.reguser.id).whoosh_search(query, MAX_SEARCH_RESULTS).all()
     return render_template('search_results.html',
                            query=query,
                            results_muddy=results_muddy,
@@ -934,8 +926,8 @@ def new_demo_form():
         
         print '\n\n in new_demo_form', title, prompt, demo_email
         if demo is None:
-            user = User.query.filter_by(email=demo_email).first()
-            if user is None:
+            reguser = Reguser.query.filter_by(email=demo_email).first()
+            if reguser is None:
                 print '\n demo is none'
                 demo = Demo(demo_email)
                 db.session.add(demo)
@@ -945,20 +937,17 @@ def new_demo_form():
                 #return redirect(url_for('index')+'#login')
 
         course_id = 2
-        user_id = 1
+        reguser_id = 1
         close_opt = 2
         live_till_hours = 14*24 #(2 weeks)
         
         meeting = Meeting(title,course_id,prompt,close_opt,live_till_hours)
-        meeting.user_id = user_id
+        meeting.reguser_id = reguser_id
         meeting.demo_email = demo_email
         meeting.close_stat = 0
         #meeting = Meeting_demo(title, prompt,demo_email)
         db.session.add(meeting)
         db.session.commit()
-
-        #form_open(user,meeting) : check what all that form requires
-        #print "meeting_demo title:", title
         
         form_open(meeting.demo_email,meeting)
         return render_template(('demo_form_created.html'),
