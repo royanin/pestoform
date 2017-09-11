@@ -4,7 +4,7 @@
 {% block content %}
   <h3>Search results for "{{ query }}":</h3>
     {% for item in results_muddy %}
-        <span style="font-size:90%; color:#666666"><i class="fa fa-file-text-o" aria-hidden="true"></i> {{ item.meeting.title }}, <i class="fa fa-folder-o" aria-hidden="true"></i> {{ item.meeting.course.title }}</span> |
+<span style="font-size:90%; color:#666666"><i class="fa fa-file-text-o" aria-hidden="true"></i> <a href="{{ url_for('view_feedback', url_string=item.meeting.url_string) }}">{{ item.meeting.title }}, <i class="fa fa-folder-o" aria-hidden="true"></i> {{ item.meeting.course.title }}</a></span> |
         {{ item.body }}<br>
     {% endfor %}
     <hr>

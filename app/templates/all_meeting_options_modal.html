@@ -19,9 +19,9 @@
                     {{ g.meeting_form.title(id="entry-title", type="title", maxlength="100", class="form-control", placeholder="Title:", value=meeting.title) }}
                 </div>
                 <div class="form-group">
-                    <!-- <em>Prompt: (300 chars. max.)</em> -->
-                    <span class="form-control-static pull-right"><div style="font-size:90%; color:#777777" id="count_message3"></div></span>
-                    {{ g.meeting_form.prompt(id="entry-prompt-edit", type="prompt", maxlength="300", class="form-control", placeholder="Prompt:", value=meeting.prompt) }}
+                    <em>Prompt: </em>
+                    <span class="form-control-static pull-right"><div style="font-size:90%; color:#777777" id="count_promptchar{{ meeting.id }}"></div></span>
+                    {{ g.meeting_form.prompt(id=meeting.id, type="prompt", maxlength="300", class="form-control", placeholder="Prompt:", value=meeting.prompt) }}
                 </div>
                 <div class="form-group">
                     <em>Folder:</em>
@@ -71,13 +71,13 @@
     </div>
         <script>
     var text_max3 = 300;
-$('#count_message3').html(text_max3 + ' characters remaining');
+$('#count_promptchar{{ meeting.id }}').html(text_max3 + ' ');
 
-$('#entry-prompt-edit').keyup(function() {
-  var text_length = $('#entry-prompt-edit').val().length;
+$('#{{ meeting.id }}').keyup(function() {
+  var text_length = $('#{{ meeting.id }}').val().length;
   var text_remaining = text_max3 - text_length;
   
-  $('#count_message3').html(text_remaining + ' characters remaining');
+  $('#count_promptchar{{ meeting.id }}').html(text_remaining + ' ');
 });
     
         </script>

@@ -19,10 +19,10 @@
               </div>
           <div class="form-group">
             {% if meeting %}
-                <span class="form-control-static pull-right"><div id="count_message4"></div></span>
+                <span class="form-control-static pull-right"><div id="count_message_nm"></div></span>
                 {{ g.meeting_form.prompt(id="entry-prompt-in", maxlength="300", class="form-control", placeholder="Form prompt:", value=meeting.title) }}
             {% else %}
-                <span class="form-control-static pull-right"><div id="count_message4"></div></span>
+                <span class="form-control-static pull-right"><div style="font-size:90%; color:#777777" id="count_message_nm"></div></span>
                 {{ g.meeting_form.prompt(id="entry-prompt-in", maxlength="300", class="form-control", placeholder="Your question/instruction to respondants") }}
             {% endif %}
               </div>
@@ -107,13 +107,13 @@
     </div>
         <script>
     var text_max = 300;
-$('#count_message4').html(text_max + ' characters remaining');
+$('#count_message_nm').html(text_max + ' ');
 
 $('#entry-prompt-in').keyup(function() {
   var text_length = $('#entry-prompt-in').val().length;
   var text_remaining = text_max - text_length;
   
-  $('#count_message4').html(text_remaining + ' characters remaining');
+  $('#count_message_nm').html(text_remaining + ' ');
 });
     
         </script>
