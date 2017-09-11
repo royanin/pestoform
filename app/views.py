@@ -729,6 +729,9 @@ def muddies():
                 db.session.add(muddy)
                 db.session.commit()
             elif submit_flag == 0:
+                meeting.blank_response += 1
+                db.session.commit()
+                print meeting.blank_response
                 print 'No muddy created...'
                 return render_template('/submitted_empty.html',
                                        meeting=meeting)

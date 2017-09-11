@@ -124,7 +124,7 @@ class Meeting(db.Model):
     live_till_hours = db.Column(db.Integer) # default could be 14 days = 14*24 hours
     note = db.Column(db.String(500))
     muddies = db.relationship('Muddy', backref='meeting', lazy='dynamic', cascade="all, delete-orphan")
-    blank_response = db.Column(db.Integer, nullable=True)
+    blank_response = db.Column(db.Integer)
 
     def __init__(self,title,course_id,prompt,close_opt,live_till_hours):
         self.title = title

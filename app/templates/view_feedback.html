@@ -49,6 +49,9 @@
         {% else %}
         <br><em>{{ meeting.title }}</em> has no feedback yet
         {% endif %}
+        {% if meeting.blank_response > 0 %}
+            &bull; "Nothing to add" response(s): {{ meeting.blank_response }}
+        {% endif %}
     </div>
     <div>
                   {#  {% if muddies_total >= 0 %}
