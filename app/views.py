@@ -595,6 +595,7 @@ def meeting_action_edit():
             meeting.close_stat = 0
             meeting.reguser_id = g.reguser.id
             meeting.demo_email = "NA"
+            meeting.blank_response = 0
             session['course_num'] = meeting.course_id
             
             db.session.add(meeting)
@@ -948,6 +949,7 @@ def new_demo_form():
         meeting.reguser_id = reguser_id
         meeting.demo_email = demo_email
         meeting.close_stat = 0
+        meeting.blank_response = 0
         #meeting = Meeting_demo(title, prompt,demo_email)
         db.session.add(meeting)
         db.session.commit()
