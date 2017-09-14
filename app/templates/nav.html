@@ -43,7 +43,7 @@
                <li class="dropdown, {{ 'active' if active_page == 'menu5' else '' }}">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Stuff <b class="caret"></b></a>
         <ul class="dropdown-menu">
-        <li><a href="{{ url_for('reguser', nickname=g.reguser.nickname) }}">Hi, {{ g.reguser.nickname }}!</a></li>
+        <li><a href="{{ url_for('reguser', nickname=g.reguser.nickname) }}">Account/Settings</a></li>
         <li class="divider"></li>
           <li><a href="/stuff#faq" onclick="location.reload()">FAQ </a></li>
           <li><a href="/stuff#tos" onclick="location.reload()">Terms of Services</a></li>
