@@ -495,12 +495,14 @@ def meeting_close():
         print 'meeting is:',id, meeting
         if meeting.close_stat == 0 and (meeting.live_till < datetime.utcnow()):
             meeting.live_till = datetime.utcnow() + timedelta(hours = 14*24)
+            db.session.commit()
             print 'meeting live till:', meeting.live_till
             flash('{} (under {}) is now open. If you want to change this duration, please go to the "edit form details" menu under form options.'.format(meeting.title, meeting.course.title))
         elif meeting.close_stat == 1:
             flash('{} (under {}) NOT receiving feedback; old comments still visible'.format(meeting.title, meeting.course.title))
         elif meeting.close_stat == 2:
             flash('{} (under {}) NOT receiving feedback; old comments hidden'.format(meeting.title, meeting.course.title))
+
     return ('', 204)
 
  
