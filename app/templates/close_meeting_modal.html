@@ -17,7 +17,7 @@
           {% endif %}
           <!-- <h4 class="sub title">This action cannot be undone</h4> -->
       </div>
-    <form action='/{{ var2 }}_close' method="post" name="post" onsubmit="setTimeout(function () { window.location.reload(); }, 10)">
+    <form action='/{{ var2 }}_close' method="post" name="post" onsubmit="setTimeout(function () { window.location.reload(); }, 1000)">
     <div class="modal-body">
                 <div class="input-group">
                     {% if var.close_stat != 0  %}
@@ -43,13 +43,12 @@
             <div class="col-sm-12">
                 <div class="checkbox">
                     <!-- <form action='/{{ var2 }}_close' method="post" name="post"> -->
+                    {{ g.meeting_form.hidden_tag() }}
                     {{ g.meeting_form.id(type = 'hidden', value=var.id) }}
                     {{ g.meeting_form.title(type = 'hidden', value=var.title) }}
                     {{ g.meeting_form.course_id(type = 'hidden', value=var.course_id) }}
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <button type="submit" name="meeting_id" class="btn btn-primary" value="{{ var.id }}">Submit changes</button>
-                    {{ g.meeting_form.hidden_tag() }}
-                    
                 </div>
             </div>
         </div>

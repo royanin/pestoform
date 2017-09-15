@@ -460,62 +460,50 @@ def meeting_note():
     print 'Here in meeting_note!'
     results = request.form.getlist('meeting_id')
     
-    #results2 = request.form['noteopt']
     print 'results:',results
     if request.method == "POST" and g.meeting_form.validate_on_submit():
-        #for item in results:
-        print 'id',g.meeting_form.id.data
-        id = g.meeting_form.id.data
-        if (id):
-        #if (item):
-            #meeting = Meeting.query.get(int(item))
-            meeting = Meeting.query.get(id)
-            meeting.note = g.meeting_form.note.data
-    
-    #for item in results:
-        #print 'item:',item
-        #if (id):
-         
-        #if (item):
-            #meeting = Meeting.query.get(int(item))
-            print 'meeting note is:', meeting.note
-            #meeting.note = g.meeting_form.note.data
-            
-            db.session.commit()
-            return ('', 204)
-            #return redirect(url_for('view'))
+        meeting = Meeting.query.get(int(results[0]))
+        meeting.note = g.meeting_form.note.data
+ 
+        print 'meeting note is:', meeting.note
+             
+        db.session.commit()
+        return ('', 204)
+ 
         
 @app.route('/meeting_close', methods=['GET', 'POST'])
 @login_required
 def meeting_close():
     print 'Here in meeting_close!'
-    
-    results = request.form.getlist('meeting_id')    
+
+    results = request.form.getlist('meeting_id')   
     results2 = request.form['closeopt']
     print 'results:',results, results2
+    
     if request.method == "POST" and g.meeting_form.validate_on_submit():
     #for item in results:
-        print 'id',g.meeting_form.id.data
-        id = g.meeting_form.id.data
-        if (id):
-        #if (item):
-            #meeting = Meeting.query.get(int(item))
-            meeting = Meeting.query.get(id)
-            #re-opening the meeting for feedback -- 
-            meeting.close_stat = int(results2)
-            print 'meeting live till:', meeting.live_till
-            print 'meeting is:',id, meeting
-            if meeting.close_stat == 0 and (meeting.live_till < datetime.utcnow()):
-                meeting.live_till = datetime.utcnow() + timedelta(hours = 14*24)
-                print 'meeting live till:', meeting.live_till
-                flash('{} (under {}) is now open. If you want to change this duration, please go to the "edit form details" menu under form options.'.format(meeting.title, meeting.course.title))
-            elif meeting.close_stat == 1 or meeting.close_stat == 2:
-                flash('{} (under {}) has been closed'.format(meeting.title, meeting.course.title))
-            
-            db.session.commit()
-            #return redirect(url_for('view'))
-            return ('', 204)
+        print 'validated'
+        meeting_id = int(results[0])
+        print 'meeting_id', int(results[0])
 
+        meeting = Meeting.query.get(meeting_id)
+        print meeting, meeting.id, meeting.close_stat
+
+        meeting.close_stat = int(results2)
+        db.session.commit()
+        print 'meeting live till:', meeting.live_till
+        print 'meeting is:',id, meeting
+        if meeting.close_stat == 0 and (meeting.live_till < datetime.utcnow()):
+            meeting.live_till = datetime.utcnow() + timedelta(hours = 14*24)
+            print 'meeting live till:', meeting.live_till
+            flash('{} (under {}) is now open. If you want to change this duration, please go to the "edit form details" menu under form options.'.format(meeting.title, meeting.course.title))
+        elif meeting.close_stat == 1:
+            flash('{} (under {}) NOT receiving feedback; old comments still visible'.format(meeting.title, meeting.course.title))
+        elif meeting.close_stat == 2:
+            flash('{} (under {}) NOT receiving feedback; old comments hidden'.format(meeting.title, meeting.course.title))
+    return ('', 204)
+
+ 
 @app.route('/meeting_delete', methods=['GET', 'POST'])
 @login_required
 def meeting_delete():
