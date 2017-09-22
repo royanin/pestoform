@@ -12,9 +12,10 @@
                 <div class="header-content-inner">
                     <h1 id="homeHeading">Anonymous feedback made easy</h1>
                     <hr>
-                    <h3>Fast, free, no-clutter</h3>
-                    <a href="{{ url_for('new_form') }}" class="btn btn-primary btn-xl">Create a new form</a>
-                    <a href="#about" class="btn btn-info btn-xl page-scroll">Find out more</a>
+                    <h3>No-fuss way to teach better with student feedback</h3><h3>Fast. Free. Clean.</h3>
+                    {# <a href="{{ url_for('new_form') }}" class="btn btn-primary btn-xl">Create a new form</a> #}
+                    <a href="#about" class="btn btn-default btn-xl page-scroll">Find out more</a><br>
+                    <!-- <div><h4>Find out what your students don't know.</h4><h4>Address their questions.</h4><h4>Teach smart!</h4></div> -->
                 </div>
          </div>
     </header>
@@ -25,8 +26,11 @@
                 <div class="col-lg-8 col-lg-offset-2 text-center">
                     <h2 class="section-heading">Create a form, share, get feedback!</h2>
                     <hr class="light">
-                    <p class="text-faded">
-                         </p>
+                    <div class="text-faded"> <h3>What will I do with student feedback? Why Pestoform?</h3>
+                        <div>You address the feedback directly via email or in-person, or lead a classroom discussion the next time you meet. You might re-design your exams and assignments, or, you may decide to overhaul your course content when you teach the same topic again. Getting frequent student feedback allows the instructor to adjust the teaching process at numerous levels.
+                        </div><br>
+                        <div>Pestoform is an online rendition of niche, pen-and-paper feedback gathering systems such as "minute paper" or "mud cards". As an online tool, it is always available, and saves your time by organizing the comments, thus helping you teach more efficiently. Pestoform is intuitive, and free!</div>
+                         </div>
                 </div>
             </div>
         </div>
@@ -74,17 +78,15 @@
             </div>
         </div>
     </section>
-
-    <section class="no-padding" id="examples">
     <aside class="bg-dark">
         <div class="container text-center">
             <div class="call-to-action">
-                <a href="{{ url_for('new_form') }}" class="btn btn-default btn-xl sr-button">Create a new form</a>
-                <h3>Use Pestoform wherever feedback helps: from classroom to seminars, from workshops to meetings.</h3>
+                <h2>Quick tutorials on how to use Pestoform</h2>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLweKQbqU4S37-yTNcCyVVZ-joGua5Wz15" frameborder="0" allowfullscreen></iframe>
             </div>
         </div>
     </aside>
-    </section>
+
     
     <section id="login">
         <div class="container">
@@ -92,6 +94,19 @@
                 {% block content %}{% endblock %}
             </div>
         </div>
+    </section>
+    
+    <section class="no-padding" id="examples">
+    <aside class="bg-dark">
+        <div class="container text-center">
+            <div class="call-to-action">
+                <h4>We understand if you are still not sure about registering for a free account.</h4>
+                <h4>If you just want to give it a try, go ahead create a form (and share, and get feedback).</h4>
+                <div>Without an account you won't be able to access your form again for editing. But you'll see the most important features of Pestoform!</div><br>
+                <a href="{{ url_for('new_form') }}" class="btn btn-default btn-xl sr-button">Create a new form</a>
+            </div>
+        </div>
+    </aside>
     </section>
     
     <section id="contact">
@@ -107,6 +122,7 @@
                     <p><a href="mailto:hello@pestoform.com">hello@pestoform.com</a></p>
                     <div class="divider-5"></div>
                     <p><a href="/stuff#faq">FAQ</a> | <a href="{{ url_for('stuff') }}#tos">Terms</a></p>
+                    <p>&copy; 2017 Pestoform.com</p>
                 </div>
                 <div class="divider-10"></div>
             </div>
