@@ -10,7 +10,7 @@ from .forms import LoginForm, EditForm, CourseForm, MeetingForm, SearchForm, Cha
 from .models import Role, Reguser, Course, Meeting, Muddy, Demo, Wantbeta
 #from .emails import follower_notification
 from config import COURSES_PER_PAGE, MEETINGS_PER_PAGE, FEEDBACK_PER_PAGE, MAX_SEARCH_RESULTS, OAUTH_CREDENTIALS,GOOGLE_CLIENT_ID, SORTING_TYPE
-from .emails import course_view, form_open, eoi_noted
+from .emails import course_view, form_open, eoi_noted, notify_server_error
 from .download import prep_dl
 from oauth import OAuthSignIn
 from oauth2client import client, crypt
@@ -58,6 +58,7 @@ def not_found_error(error):
 @app.errorhandler(500)
 def internal_error(error):
     db.session.rollback()
+    notify_server_error()
     return render_template('500.html'), 500
 
 ##Social login using Miguel oauth begins

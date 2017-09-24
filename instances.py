@@ -20,5 +20,6 @@ ENV_VAR = {
     'DEV_SITE' : 'http://localhost:5000',
     'DATABASE_URL' : 'mysql://apps:Quickbrow7#@localhost/apps',
     #'DATABASE_URL' : 'postgresql://apps:Quickbrow7#@localhost/apps',
-    'SEC_PASSWD_SALT' : 'this_is_something_long'
+    'SEC_PASSWD_SALT' : 'this_is_something_long',
+    'URGENT_EMAIL' : 'royanin@gmail.com'
 }

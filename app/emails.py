@@ -2,7 +2,7 @@ from flask import render_template
 from flask_mail import Message
 from app import mail
 from .decorators import async
-from config import ADMINS
+from config import ADMINS,URGENT_EMAIL
 from app import app
 from smtplib import SMTPException
 
@@ -56,3 +56,15 @@ def eoi_noted(email):
                                email=email),
                render_template("email_eoi.html",
                                email=email))
+
+
+def notify_server_error():
+    print URGENT_EMAIL
+    send_email(#"Hi %s!" % email,
+               "Pestoform Failure!(URGENT)",
+               ADMINS[0],
+               [URGENT_EMAIL],
+               render_template("email_server_fail.txt",
+                               email=URGENT_EMAIL),
+               render_template("email_server_fail.html",
+                               email=URGENT_EMAIL))

@@ -35,6 +35,7 @@ MAIL_PASSWORD = ENV_VAR['MAIL_PASSWORD']
 
 # administrator list
 ADMINS = [MAIL_USERNAME]
+URGENT_EMAIL = ENV_VAR['URGENT_EMAIL']
 
 #Site name for general use:
 WSNAME = "pestoform.com"

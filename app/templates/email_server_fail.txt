@@ -1,0 +1,9 @@
+Dear {{ email }},
+
+
+Pestoform fail!
+
+Please act. Urgent.
+
+Regards,
+The Pestoform admin
