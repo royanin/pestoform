@@ -15,7 +15,7 @@ GGL_CREDENTIALS = {
 ENV_VAR = {
     'DB_SECRET_KEY' : 'I-have-no-idea-why-this-is-needed',
     'MAIL_USERNAME' : 'admin@pestoform.com',
-    'MAIL_PASSWORD' : 'Quickbrow7#',
+    'MAIL_PASSWORD' : 'greenricedancemedicare',
     'PROD_SITE' : 'https://pestoform.com',
     'DEV_SITE' : 'http://localhost:5000',
     'DATABASE_URL' : 'mysql://apps:Quickbrow7#@localhost/apps',
