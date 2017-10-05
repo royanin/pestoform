@@ -1,0 +1,60 @@
+<!--<button type="button" class="btn btn-sm btn-primary navbar-btn" data-toggle="modal" data-target="#new-entry">New!</button> -->
+<div class="modal fade" id="share-meeting-modal-{{ var.id }}" tabindex="-1" role="dialog" aria-labelledby="share-meeting-modal">
+{% set var2 = 'meeting' %}
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="note-modal">Share or visit form URL for
+            <span class="label label-warning">{{ var.title }}</span></h4>
+      </div>
+      <div class="modal-body">
+        <div>
+          <!-- <div class="col-sm-12 col-xs-12" id="m-{{ var.id }}"> -->
+            <h4><i class="fa fa-link sr-visit-form"></i> URL:</h4>
+            <p  style="font-size:80%; color:#777777"><span style="word-wrap:break-word;">
+            {{ config.SITE }}{{ url_for('m', url_string=meeting.url_string) }}
+            </span></p>
+        </div>
+          <br><br>
+        <div>
+          <a href="{{ config.SITE }}/m/{{ var.url_string }}" target="_blank"><h4><i class="fa fa-external-link sr-visit-form"></i> Click here to visit form URL</h4></a>
+            <p  style="font-size:80%; color:#777777">(Form will open in a new browser tab)</p>
+        </div>
+          <br><br>
+          <div>
+               <form action='/send_meeting_view' method="post" id = "form-email-meeting-{{ var.id  }}" name="post" onsubmit="setTimeout(function () { window.location.reload(); }, 1000)">
+                    <h4><button type="submit" name="meeting_id" class="btn btn-default" value="{{ var.id }}">
+                {{ g.gen_form.id(type = 'hidden', value=var.id) }}
+                <i class="fa fa-envelope-o sr-email-form-data"></i> Email 
+                        </button>
+                        form URL to: {{ reguser.email }}</h4>
+                   
+                </form>
+          </div>
+          <br><br>
+          <div>
+                <h4><i class="fa fa-share-alt sr-share-email"></i> Share form URL via email:</h4>
+                <form action='/email_form_url' method="post" id = "form-download-meeting-{{ var.id   }}" name="post" onsubmit="setTimeout(function () { window.location.reload(); }, 1000)">
+                    {{ g.gen_form.id(type = 'hidden', value=var.id) }}
+                {{ g.gen_form.inp_string(id= var.id, rows=3,  maxlength="500", class="form-control", placeholder="List multiple emails separated by ','", value="" ) }}
+                {{ g.gen_form.hidden_tag() }}
+                <button type="submit" name="meeting_id" class="btn btn-default" value="{{ var.id }}">
+                    <i class="fa fa-envelope-o sr-email-form-data"></i> Email URL </button>
+                </form>
+          </div>
+      </div>
+      <div class="modal-footer">
+        <div class="row-fluid">
+            <div class="col-sm-12">
+                <br>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  {# {{ g.meeting_form.hidden_tag() }} #}
+                    
+            </div>
+        </div>
+        
+      </div>
+        </div>      
+      </div>
+    </div>

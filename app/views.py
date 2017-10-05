@@ -6,16 +6,17 @@ from datetime import datetime,timedelta
 from dateutil import parser
 import pytz
 from app import app, db, lm #, oid
-from .forms import LoginForm, EditForm, CourseForm, MeetingForm, SearchForm, ChangeIndexForm, MuddyForm, DemoForm, WantbetaForm, TestcodeForm
+from .forms import LoginForm, EditForm, CourseForm, MeetingForm, SearchForm, ChangeIndexForm, MuddyForm, DemoForm, WantbetaForm, GenForm
 from .models import Role, Reguser, Course, Meeting, Muddy, Demo, Wantbeta
 #from .emails import follower_notification
 from config import COURSES_PER_PAGE, MEETINGS_PER_PAGE, FEEDBACK_PER_PAGE, MAX_SEARCH_RESULTS, OAUTH_CREDENTIALS,GOOGLE_CLIENT_ID, SORTING_TYPE
-from .emails import course_view, form_open, eoi_noted, notify_server_error
-from .download import prep_dl
+from .emails import course_view, meeting_view, form_open, eoi_noted, notify_server_error, form_share_email
+from .download import course_dl, meeting_dl
 from oauth import OAuthSignIn
 from oauth2client import client, crypt
 from apiclient import discovery
-import httplib2
+import httplib2, re
+from validate_email import validate_email
 from sqlalchemy import desc, func, select
 #from flask.ext.social import Social
 #from flask.ext.social.datastore import SQLAlchemyConnectionDatastore
@@ -38,7 +39,7 @@ def before_request():
     g.muddy_form = MuddyForm()
     g.demo_form = DemoForm()
     g.wantbeta_form = WantbetaForm()
-    g.testcode_form =  TestcodeForm()
+    g.gen_form =  GenForm()
     g.GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID
     if g.reguser.is_authenticated:
         g.reguser.last_seen = datetime.utcnow()
@@ -762,9 +763,9 @@ def feedback_delete():
             return redirect(url_for('view_feedback', url_string=session['bc_url'], page=1))
 
 #@app.route('/')
-@app.route('/dl_csv', methods=['POST'])
+@app.route('/dl_csv_course', methods=['POST'])
 @login_required
-def dl_csv():
+def dl_csv_course():
     print 'Here in download_csv!'
     results = request.form.getlist('id')
     print 'results:',results
@@ -774,7 +775,7 @@ def dl_csv():
             course = Course.query.get(int(item))
             print 'course is:',int(item), course
             reguser = Reguser.query.get(course.reguser_id)
-            filename = prep_dl(reguser,course)
+            filename = course_dl(reguser,course)
             downloads = app.config['DOWNLOAD_FOLDER']
             print downloads, filename
             try:
@@ -785,6 +786,30 @@ def dl_csv():
                 return str(file_send_error)
 
 
+
+#@app.route('/')
+@app.route('/dl_csv_meeting', methods=['POST'])
+@login_required
+def dl_csv_meeting():
+    print 'Here in download_csv!'
+    results = request.form.getlist('id')
+    print 'results:',results
+    for item in results:
+        print 'item:',item
+        if (item):
+            meeting = Meeting.query.get(int(item))
+            print 'meeting is:',int(item), meeting
+            reguser = Reguser.query.get(meeting.reguser_id)
+            filename = meeting_dl(reguser,meeting)
+            downloads = app.config['DOWNLOAD_FOLDER']
+            print downloads, filename
+            try:
+                flash('Content for {} has been download!'.format(meeting.title))
+	        return send_from_directory(directory=downloads, filename=filename, as_attachment=True)
+
+            except Exception as file_send_error:
+                return str(file_send_error)
+            
 @app.route('/send_course_view', methods=['POST'])
 @login_required
 def send_course_view():
@@ -800,10 +825,32 @@ def send_course_view():
             print  'User is:', reguser.nickname
             course_view(reguser,course)
             flash('{} details has been sent to {}'.format(course.title,g.reguser.email))
-            session['course_num'] = course.id
-            session['course_title'] = course.title
-            return redirect(url_for('view_folder'))
+            #session['course_num'] = course.id
+            #session['course_title'] = course.title
+            #return redirect(url_for('view_folder'))
+            return ('', 204)
 
+
+            
+@app.route('/send_meeting_view', methods=['POST'])
+@login_required
+def send_meeting_view():
+    print 'Here in meeting_view_send_email!'
+    results = request.form.getlist('id')
+    print 'results:',results
+    for item in results:
+        print 'item:',item
+        if (item):
+            meeting = Meeting.query.get(int(item))
+            print 'meeting is:',int(item), meeting
+            reguser = Reguser.query.get(meeting.reguser_id)
+            print  'User is:', reguser.email
+            meeting_view(reguser,meeting)
+            flash('{} details has been sent to {}'.format(meeting.title,g.reguser.email))
+            #session['course_num'] = meeting.course_id
+            #session['course_title'] = course.title
+            #return redirect(url_for('view_folder'))
+            return ('', 204)
 
 @app.route('/send_form_open', methods=['POST'])
 @login_required
@@ -822,6 +869,45 @@ def send_form_open():
             form_open(reguser.email,meeting)
             #flash('{} details has been sent to {}'.format(meeting.title,g.reguser.email))
             return ('', 204)
+
+@app.route('/email_form_url', methods=['POST'])
+@login_required
+def email_form_url():
+    print 'sharing URL by email'
+    if request.method == "POST" and g.gen_form.validate_on_submit():
+        print '\n\nHere in register beta_form3!'
+        email_string = g.gen_form.inp_string.data
+        meeting_id = g.gen_form.id.data
+        email_list = []
+        email_list_err = []
+        email_list_pre_valid = email_string.split(",")
+        for item in email_list_pre_valid:
+            is_valid = validate_email(item)
+            if (is_valid):
+                email_list.append(item)
+            else:
+                email_list_err.append(item)
+        email_list = list(set(email_list))
+        #results = request.form.getlist('id')
+        print 'meeting_id:',meeting_id
+        print 'email_list:',email_list
+        meeting = Meeting.query.get(meeting_id)
+        #reguser = Reguser.query.get(meeting.reguser_id)
+        reguser = g.reguser
+        print  'User is:', reguser.email
+        print  'valid emails:', email_list
+        print 'invalid emails:', email_list_err
+        #form_open(reguser.email,meeting)
+        form_share_email(email_list, reguser.email,meeting)
+        if len(email_list) > 0:
+            flash('Form {} URL has been sent to {}'.format(meeting.title,','.join(email_list)))
+        if len(email_list_err) > 0:
+            flash('The following are not acceptable email ids: {}'.format(','.join(email_list_err)))
+
+        return ('', 204)
+    else:
+        flash("At least one email id required. No input received")
+        return('',204)
             
     
 
@@ -975,9 +1061,9 @@ def get_test_code():
 @app.route('/register_beta', methods=['GET','POST'])
 def register_beta():
     print 'Validating test code'
-    if request.method == "POST" and g.testcode_form.validate_on_submit():
+    if request.method == "POST" and g.gen_form.validate_on_submit():
         print '\n\nHere in register beta_form3!'
-        test_code = g.testcode_form.test_code.data
+        test_code = g.gen_form.inp_string.data
         if test_code != "test_test":
             return str("Wrong test code. Please try again.")
         else:

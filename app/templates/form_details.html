@@ -1,0 +1,34 @@
+<table class="table table-striped">
+        <tr><div class="col-md-6"><b>Title:</b> {{ var.title }}</div></tr>
+        <tr><div class="col-md-6"><b>Prompt:</b> {{ var.prompt }}</div></tr>
+        <tr><div class="col-md-6"><b>Note:</b> {{ var.note }}</div></tr>
+        <tr><div class="col-md-6"><b>URL:</b> <a href="{{ config.SITE }}/m/{{ var.url_string }}">{{ config.SITE }}/m/{{ var.url_string }}</a></div></tr>
+        <tr><div class="col-md-6"><b>#BR:</b> {{ var.blank_response }}</div></tr>
+        <tr><div class="col-md-6"><b>Created (UTC):</b> {{ var.timestamp }}</div></tr>
+        <tr><div class="col-md-6"><b>Accepting feedback now?</b>&nbsp;
+                {% if var.close_stat > 0 %}
+                    No
+                {% else %}
+                    Yes
+                {% endif %}
+            </div></tr>
+        
+</table>
+{% if  var.muddies.count()>0 %}
+<p>Comments and #Likes for form <b>{{ var.title }}</b> </p>
+<table class="table table-striped">
+    <tr valign="top">
+        <td><div class="col-md-2"><b>#Likes</b></div></td>
+        <td><div class="col-md-6"><b>&ensp;Comments</b></div></td>
+    </tr>
+    {% for muddy in var.muddies %}
+    <tr valign="top">
+        <td><div class="col-md-2"><b>{{ muddy.like_count }}</b></div></td>
+        <td><div class="col-md-6">{{ muddy.body }}</div></td>
+    </tr>
+    {% endfor %}
+    </table>
+{% else %}
+        <p>No feedback available for form <b>{{ var.title }}</b></p>
+{% endif %}
+    <hr>

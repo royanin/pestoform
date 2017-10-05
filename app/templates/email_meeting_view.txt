@@ -1,0 +1,7 @@
+Dear {{ reguser.email }},
+
+This is just a test email about your course {{ meeting.title }}!
+
+Regards,
+
+The Pestoform admin

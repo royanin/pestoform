@@ -1,0 +1,6 @@
+{{ email }} has requested your feedback via Pestoform.com
+
+Please click/copy-paste the link to access the form: {{ config.DEV_SITE }}/m/{{ meeting.url_string }}
+
+Regards,
+The Pestoform admin

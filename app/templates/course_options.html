@@ -7,7 +7,7 @@
     <ul class="dropdown-menu" aria-labelledby="folder-dropdown-{{ var.id }}">
     <li>
                 <a href="#" onclick="document.getElementById('form-download-course-{{ var.id }}').submit()"> Download folder details </a>
-                <form action='/dl_csv' method="post" id = "form-download-course-{{ var.id }}" name="post">
+                <form action='/dl_csv_course' method="post" id = "form-download-course-{{ var.id }}" name="post">
                 {{ g.course_form.id(type = 'hidden', value=var.id) }}
                 </form>
     </li>

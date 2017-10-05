@@ -1,0 +1,44 @@
+<!--<button type="button" class="btn btn-sm btn-primary navbar-btn" data-toggle="modal" data-target="#new-entry">New!</button> -->
+<div class="modal fade" id="dl-email-modal-{{ var.id }}" tabindex="-1" role="dialog" aria-labelledby="dl-email-modal">
+{% set var2 = 'meeting' %}
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="note-modal">Download or email the form and the feedback for
+            <span class="label label-warning">{{ var.title }}</span></h4>
+          <!-- <h4 class="sub title">This action cannot be undone</h4> -->
+      </div>
+    <div class="modal-body">
+        <div>
+                <form action='/send_meeting_view' method="post" id = "form-email-meeting-{{ var.id  }}" name="post" onsubmit="setTimeout(function () { window.location.reload(); }, 1000)">
+                <button type="submit" name="meeting_id" class="btn btn-default" value="{{ var.id }}">
+                <i class="fa fa-envelope-o sr-email-form-data"></i> Email form data
+                {{ g.meeting_form.id(type = 'hidden', value=var.id) }}
+                </button>
+                </form>
+        </div>
+            <br>
+        <div>
+            
+                <form action='/dl_csv_meeting' method="post" id = "form-download-meeting-{{ var.id   }}" name="post" onsubmit="setTimeout(function () { window.location.reload(); }, 1000)">
+                    {{ g.meeting_form.id(type = 'hidden', value=var.id) }}
+                <button type="submit" name="meeting_id" class="btn btn-default" value="{{ var.id }}">
+                <i class="fa fa-download sr-download-form-data"></i> Download form data </button>
+                </form>
+
+        </div>
+    </div>
+      <div class="modal-footer">
+        <div class="row-fluid">
+            <div class="col-sm-12">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  {# {{ g.meeting_form.hidden_tag() }} #}
+                    
+            </div>
+        </div>
+        
+      </div>
+        </div>      
+      </div>
+    </div>

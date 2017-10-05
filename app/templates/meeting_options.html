@@ -1,7 +1,7 @@
 <!-- <div class="dropdown"> -->
                         {% with var = meeting %}
                         <button class="btn btn-primary btn-xs dropdown-toggle" align="pull-right" aria-label="meeting-options-dd" data-toggle="dropdown" id="#dropdown-{{ var.id }}"  aria-haspopup="true">
-                         <span><i class="fa fa-file-text-o" aria-hidden="true"></i></span><span style="padding-left:5px"></span><i class="fa fa-ellipsis-v" aria-hidden="true"> <span class="caret"></span></i>
+                         <span><i class="fa fa-file-text-o" aria-hidden="true"></i></span><span style="padding-left:5px"></span><i class="fa fa-ellipsis-v" aria-hidden="true"><span style="padding-left:5px"></span><span class="caret"></span></i>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="dropdown-{{ var.id }}">
                             <li>
@@ -12,7 +12,11 @@
                             <a href="#note-modal-{{ var.id }}"  aria-label="note-modal" data-toggle="modal">Add/edit a note</a>
                             </li>
                             <li>
-                                <a href="{{ url_for('m', url_string=meeting.url_string) }}" target="_blank">Go to form</a>
+                            <a href="#dl-email-modal-{{ var.id }}"  aria-label="dl-email-modal" data-toggle="modal">Download/email form data</a>
+                            </li>
+                            <li>
+                                <a href="#share-meeting-modal-{{ var.id }}"  aria-label="share-meeting-modal" data-toggle="modal">Share/visit form URL</a>
+                                {# <a href="{{ url_for('m', url_string=meeting.url_string) }}" target="_blank">Go to form</a> #}
                             </li>
                             <li>
                                 <a href="#close-modal-{{ var.id }}" aria-label="close-modal" data-toggle="modal">Stop/Resume feedback</a>
@@ -23,6 +27,8 @@
             
                             </li>
                         </ul>
+                            {% include 'share_meeting_modal.html' %}
+                            {% include 'dl_email_modal.html' %}
                             {% include 'all_meeting_options_modal.html' %}
                             {% include 'close_meeting_modal.html' %}
                             {% include 'note_meeting_modal.html' %}

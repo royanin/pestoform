@@ -36,7 +36,7 @@
     <ul class="dropdown-menu" aria-labelledby="dropdown-{{ var.id }}">
     <li>
                 <a href="#" onclick="document.getElementById('form-download-course-{{ var.id }}').submit()"> Download course details </a>
-                <form action='/dl_csv' method="post" id = "form-download-course-{{ var.id }}" name="post">
+                <form action='/dl_csv_course' method="post" id = "form-download-course-{{ var.id }}" name="post">
                 {{ g.course_form.id(type = 'hidden', value=var.id) }}
                 {# <button type="submit" name = "course_id" class="btn btn-link" value="{{ var.id }}">
                         Download course details

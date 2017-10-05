@@ -1,15 +1,36 @@
 <p>Dear {{ reguser.email }},</p>
 
-This is a test email about your course <b>{{ course.title }}</b>
+This is an email containing all the forms and the feedback contained in the folder <b>{{ course.title }}</b>
 <br><br>
+<h2>Summary of forms contained in folder <b>{{ course.title }}</b></h2>
 <table class="table table-striped">
-{% for meeting in course.meetings %}
+    <tr valign="top">
+        <td><div class="col-md-3"><b>Form title</b></div></td>
+        <td><div class="col-md-2"><b>Created (UTC)</b></div></td>
+        <td><div class="col-md-1"><b>#FB</b></div></td> 
+    </tr>
+    {% for meeting in course.meetings %}
     <tr valign="top">
         <td><div class="col-md-3"><b>{{ meeting.title }}</b></div></td>
-        <td><div class="col-md-1">{{ meeting.muddies.count() }}</div></td>
+        <td><div class="col-md-2">{{ meeting.timestamp }} (UTC)</div></td>
+        <td><div class="col-md-1">&ensp;{{ meeting.muddies.count() }}</div></td> 
     </tr>
 {% endfor %}
 </table>
 <br><br>
+
+<h2>Form details and feedback contained in folder <b>{{ course.title }}</b></h2>
+<hr><br>
+{% for meeting in course.meetings %}
+    {% with var = meeting %}
+        {% include "form_details.html" %}
+    {% endwith %}
+{% endfor %}
+<br><br>
+<hr>
+<p>(1) "#BR" represents the total number of "nothing to add" responses on the feedback form.</p>
+<p>(2) "#Likes" represents the total number of upvotes a comment received.</p>
+<p>(3) "#FB" represents the total number of comments a form received.</p>
+
 <p>Regards,</p>
 <p>The <code>Pestoform</code> admin</p>

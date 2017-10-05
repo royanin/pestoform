@@ -87,6 +87,6 @@ class WantbetaForm(Form):
     #test_code =  StringField('test_code')
     email = EmailField('email', validators=[validators.Email()])
 
-class TestcodeForm(Form):
+class GenForm(Form):
     id = HiddenField()
-    test_code =  StringField('test_code, validators=[DataRequired()]')
+    inp_string =  StringField('string', validators=[DataRequired()])

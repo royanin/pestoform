@@ -6,10 +6,10 @@
         <h2>Alpha testing</h2>
         <form class='form-inline' action='/register_beta' method="post" name="post" enctype="multipart/form-data" >
             <div class="form-group">
-                {{ g.testcode_form.test_code(id="test_code", maxlength="140", class="form-control", placeholder="Please type in your test code") }}
+                {{ g.gen_form.inp_string(id="inp_string", maxlength="140", class="form-control", placeholder="Please type in your test code") }}
             </div>
             <button type="submit" class="btn btn-sm btn-primary" value="save">Go!</button>
-            {{ g.testcode_form.hidden_tag() }}            
+            {{ g.gen_form.hidden_tag() }}            
         </form> 
         <hr>
         {% include 'eoi.html'%}

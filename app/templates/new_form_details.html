@@ -8,7 +8,7 @@
 
     <h3>Form "{{ meeting.title }}" has been created.</h3>
     
-    <p><a href="{{ url_for('m', url_string=meeting.url_string) }}" target="_blank">Click here to check out the recipient view of the form</a></p>
+    <p><a href="{{ url_for('m', url_string=meeting.url_string) }}" target="_blank">Click here to visit form URL</a></p>
     <div class="col-sm-12 col-xs-12" id="p1">
         <p  style="font-size:80%; color:#777777"><span style="word-wrap:break-word;">
             {{ config.SITE }}{{ url_for('m', url_string=meeting.url_string) }}
@@ -46,7 +46,6 @@
     $temp.remove();
     return result;
 }
-    
 </script>
 
 {% endblock %}
