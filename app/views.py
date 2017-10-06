@@ -635,6 +635,7 @@ def view_feedback(url_string,page=1):
         session['bc_url'] = url_string
         
         return render_template(('view_feedback.html'),
+                           reguser = g.reguser,
                            url_string=url_string,
                            meeting=meeting,
                            meeting_muddies=meeting_muddies,
