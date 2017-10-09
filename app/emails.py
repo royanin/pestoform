@@ -59,7 +59,7 @@ def form_open(email,meeting):
 
 def form_share_email(list_to, request_from, meeting):
     print 'Hi, this is emails.py form_share_email'
-    send_email("Feedback request: %s from" % request_from,
+    send_email("Feedback request: From %s"% request_from,
                #"Hello from Pestoform!",
                ADMINS[0],
                list_to,
