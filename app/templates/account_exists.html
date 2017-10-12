@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+    <div class="col-sm-6 col-sm-offset-3 text-center">
+        <div class="divider-5"></div>
+        <h2>An account exists for</h2>
+        <h3>{{ session['new_email'] }}</h3>
+        <p>If you don't remember the password, please follow the link below to regain access:</p>
+        <h4><a href='reset#login'>Forgot password</a></h4>
+    </div>
+    </div>
+{% endblock %}

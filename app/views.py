@@ -12,6 +12,7 @@ from .models import Role, Reguser, Course, Meeting, Muddy, Demo, Wantbeta
 from config import COURSES_PER_PAGE, MEETINGS_PER_PAGE, FEEDBACK_PER_PAGE, MAX_SEARCH_RESULTS, OAUTH_CREDENTIALS,GOOGLE_CLIENT_ID, SORTING_TYPE
 from .emails import course_view, meeting_view, form_open, eoi_noted, notify_server_error, form_share_email
 from .download import course_dl, meeting_dl
+from .random_funcs import find_acad_domain
 from oauth import OAuthSignIn
 from oauth2client import client, crypt
 from apiclient import discovery
@@ -784,7 +785,9 @@ def dl_csv_course():
 	        return send_from_directory(directory=downloads, filename=filename, as_attachment=True)
 
             except Exception as file_send_error:
-                return str(file_send_error)
+                session['message'] = "There was an error. Please try again in a bit. Do let us know at admin@pestoform.com if the problem persists. Thanks!"
+                return render_template("message.html")
+                #return str(file_send_error)
 
 
 
@@ -809,7 +812,9 @@ def dl_csv_meeting():
 	        return send_from_directory(directory=downloads, filename=filename, as_attachment=True)
 
             except Exception as file_send_error:
-                return str(file_send_error)
+                #return str(file_send_error)
+                session['message'] = "There was an error. Please try again in a bit. Do let us know at admin@pestoform.com if the problem persists. Thanks!"
+                return render_template("message.html")
             
 @app.route('/send_course_view', methods=['POST'])
 @login_required
@@ -1066,7 +1071,10 @@ def register_beta():
         print '\n\nHere in register beta_form3!'
         test_code = g.gen_form.inp_string.data
         if test_code != "test_test":
-            return str("Wrong test code. Please try again.")
+            session['message'] = "Wrong test code. Please try again."
+            return render_template("message.html")
+            #return str("Wrong test code. Please try again.")
+        
         else:
             return redirect("register#login")
     else:
@@ -1077,3 +1085,36 @@ def register_beta():
 @login_required
 def delete_account():
     return render_template('delete_account.html')
+
+@app.route('/free_acad_accnt', methods=['GET','POST'])
+def free_acad_accnt():
+    print 'Here in free academic account!'
+    if request.method == "POST" and g.wantbeta_form.validate_on_submit():
+        print '\n\nForm validated'
+        email = g.wantbeta_form.email.data
+        email_domain = email.split("@")[1]
+        print email_domain
+
+        print "Checking for institutional domain name for ",email_domain
+        print "..."
+        
+
+        exist_email = Reguser.query.filter_by(email=email).first()
+        if exist_email is not None:
+            session['new_email'] = email
+            return render_template("account_exists.html")
+            
+        else:
+            loc = find_acad_domain(email_domain.encode('utf-8')) 
+            if loc is None:
+                session['message'] = "We cannot identify your institution domain. Please write to us at admin@pestoform.com so we can create an account for you."
+                return render_template("message.html")
+            else:
+                session['new_email'] = email
+                session['loc'] = loc
+                return redirect('register#login')
+
+    else:
+        session['message'] = "Something strange happened. Please try again!"
+        return render_template("message.html")
+        

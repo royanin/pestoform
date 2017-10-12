@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="row">
+    <div class="col-sm-6 col-sm-offset-3 text-center">
+        <div class="divider-5"></div>
+        {% if session['message'] %}
+        <h3>{{ session['message'] }}</h3>
+        {% else %}
+        <h3>Something strange happened. Please try again!</h3>
+        {% endif %}
+    </div>
+    </div>
+{% endblock %}

@@ -3,8 +3,12 @@
     <div class="row">
     <div class="col-sm-6 col-sm-offset-3 text-center">
         <div class="divider-5"></div>
+        {% include "free_acad_accnt.html" %}
+        <hr>
+        <h3>or,</h3>
         <h2>Alpha testing</h2>
         <form class='form-inline' action='/register_beta' method="post" name="post" enctype="multipart/form-data" >
+            <div>Please type in the test code you received from us</div><br>
             <div class="form-group">
                 {{ g.gen_form.inp_string(id="inp_string", maxlength="140", class="form-control", placeholder="Please type in your test code") }}
             </div>

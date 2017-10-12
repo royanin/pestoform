@@ -26,10 +26,15 @@
                 <div class="col-lg-8 col-lg-offset-2 text-center">
                     <h2 class="section-heading">Create a form, share, get feedback!</h2>
                     <hr class="light">
-                    <div class="text-faded"> <h3>What will I do with student feedback? Why Pestoform?</h3>
-                        <div>You address the feedback directly via email or in-person, or lead a classroom discussion the next time you meet. You might re-design your exams and assignments, or, you may decide to overhaul your course content when you teach the same topic again. Getting frequent student feedback allows the instructor to adjust the teaching process at numerous levels.
+                    <div class="text-faded"> <h3>How Pestoform helps better teaching and learning</h3>
+                        <div>Find out where your students get stuck &bull;
+                            Motivate students to learn more by addressing their feedback &bull;
+                            Be more inclusive by inviting anonymous feedback &bull;
+                            Encourage meta-cognitive learning practices*
                         </div><br>
-                        <div>Pestoform is an online rendition of niche, pen-and-paper feedback gathering systems such as "minute paper" or "mud cards". As an online tool, it is always available, and saves your time by organizing the comments, thus helping you teach more efficiently. Pestoform is intuitive, and free!
+                        <div>Pestoform is simple, well-organized, and free for educators
+                            <hr>
+                            <p>*Students learn better when they revisit a newly acquainted topic. The process of providing feedback and the followup discussions allow them to revise what they learned. </p>
                         </div>
                     </div>
                 </div>
@@ -42,6 +47,7 @@
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2 class="section-heading">How it works</h2>
+                    <h4>First create an account. Then,</h4>
                     <hr class="primary">
                 </div>
             </div>
@@ -81,7 +87,8 @@
     </section>
     <aside class="bg-dark">
         <div class="container text-center">
-            <div class="call-to-action">
+            <!-- <div class="call-to-action"> -->
+            <div class="col-lg-6 col-lg-offset-3 col-md-8 col-md-offset-2 text-center">
                 <h2>Quick tutorials on how to use Pestoform</h2>
                 <div class="video-container">
                     <iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?list=PLweKQbqU4S37-yTNcCyVVZ-joGua5Wz15" frameborder="0" allowfullscreen=""></iframe>
@@ -99,7 +106,7 @@
         </div>
     </section>
     
-    <section class="no-padding" id="examples">
+    {#<section class="no-padding" id="examples">
     <aside class="bg-dark">
         <div class="container text-center">
             <div class="call-to-action">
@@ -110,21 +117,32 @@
             </div>
         </div>
     </aside>
-    </section>
+    </section>#}
     
     <section id="contact">
+    <aside class="bg-dark">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 text-center">
+                <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 text-center">
                     <h2 class="section-heading">Let's Get In Touch!</h2>
                     <hr class="primary">
                     <p> We'd love to hear back from you!</p>
                 </div>
-                <div class="col-lg-8 col-lg-offset-2 text-center">
+            </div>
+        </div>
+    </aside>
+    <!-- </section>
+    <section id="contact"> -->
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 text-center">
+                    <br>
+                    <a href="mailto:hello@pestoform.com">
                     <i class="fa fa-envelope-o fa-3x sr-contact"></i>
-                    <p><a href="mailto:hello@pestoform.com">hello@pestoform.com</a></p>
+                    <h3>hello@pestoform.com</h3>
+                        </a>
                     <div class="divider-5"></div>
-                    <p><a href="/stuff#faq">FAQ</a> | <a href="{{ url_for('stuff') }}#tos">Terms</a></p>
+                    <h3><a href="/stuff#faq">FAQ</a> | <a href="{{ url_for('stuff') }}#tos">Terms</a></h3>
                     <p>&copy; 2017 Pestoform.com</p>
                 </div>
                 <div class="divider-10"></div>
