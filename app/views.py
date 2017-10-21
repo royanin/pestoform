@@ -565,7 +565,7 @@ def meeting_action_edit():
         print 'meeting id is:',id
         if (id):
             #for item in request.data:
-            print request.data
+            
             print '\n\n\nHere in meeting',id
             meeting = Meeting.query.get(id)
             
@@ -601,6 +601,10 @@ def meeting_action_edit():
             return render_template(('new_form_details.html'),
                            meeting=meeting)
 
+    else:
+        flash('A title is required')
+        return redirect(url_for('index'))
+                
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/view', methods=['GET', 'POST'])
