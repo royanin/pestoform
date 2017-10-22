@@ -3,6 +3,7 @@ from flask_security import login_user, logout_user, current_user, login_required
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin
 #from flask_login import login_user, logout_user, current_user, login_required, UserMixin, RoleMixin
 from datetime import datetime,timedelta
+from urlparse import urlparse, urljoin
 from dateutil import parser
 import pytz
 from app import app, db, lm #, oid
@@ -28,6 +29,12 @@ user_datastore = SQLAlchemyUserDatastore(db, Reguser, Role)
 security = Security(app, user_datastore)
 #social = Social(app, connection_datastore) 
 
+def is_safe_url(target):
+    ref_url = urlparse(request.host_url)
+    test_url = urlparse(urljoin(request.host_url, target))
+    return test_url.scheme in ('http', 'https') and \
+           ref_url.netloc == test_url.netloc
+
 @lm.user_loader
 def load_user(id):
     return Reguser.query.get(int(id))
@@ -42,6 +49,7 @@ def before_request():
     g.wantbeta_form = WantbetaForm()
     g.gen_form =  GenForm()
     g.GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID
+
     if g.reguser.is_authenticated:
         g.reguser.last_seen = datetime.utcnow()
         db.session.add(g.reguser)
@@ -50,7 +58,13 @@ def before_request():
         g.course_form = CourseForm()
         g.meeting_form = MeetingForm()
         g.change_index_form = ChangeIndexForm()
-       
+
+    else:
+        login_user(g.reguser,remember=True)
+        #next = request.args.get('next')
+        #if not is_safe_url(next):
+            #return abort(400)
+        #return redirect(next or url_for('index'))
 
 @app.errorhandler(404)
 def not_found_error(error):
@@ -342,6 +356,8 @@ def view_folder(page=1):
         #course.title = session['course_title']
     reguser = g.reguser
     course = Course.query.get(course_id)
+    if course is None:
+        return redirect(url_for('view'))
 
     session['course_num'] = course.id
     session['course_title'] = course.title
@@ -404,7 +420,7 @@ def course_action_edit():
 
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
-@app.route('/course_archive', methods=['GET', 'POST'])
+@app.route('/course_archive', methods=['POST'])
 @login_required
 def course_archive():
     print 'Here in course_archive!'
@@ -431,10 +447,11 @@ def course_archive():
 
 @app.route('/')
 @app.route('/index', methods=['GET', 'POST'])
-@app.route('/course_delete', methods=['GET', 'POST'])
+@app.route('/course_delete', methods=['POST'])
 @login_required
 def course_delete():
     print 'Here in course_delete!'
+    
     results = request.form.getlist('id')
     print 'results:',results
     for item in results:
@@ -456,7 +473,7 @@ def course_delete():
 @app.route('/index', methods=['GET', 'POST'])
 @app.route('/view', methods=['GET', 'POST'])
 @app.route('/view/<int:page>', methods=['GET', 'POST'])
-@app.route('/meeting_note', methods=['GET', 'POST'])
+@app.route('/meeting_note', methods=['POST'])
 @login_required
 def meeting_note():
     g.meeting_form = MeetingForm()
@@ -474,7 +491,7 @@ def meeting_note():
         return ('', 204)
  
         
-@app.route('/meeting_close', methods=['GET', 'POST'])
+@app.route('/meeting_close', methods=['POST'])
 @login_required
 def meeting_close():
     print 'Here in meeting_close!'
@@ -509,7 +526,7 @@ def meeting_close():
     return ('', 204)
 
  
-@app.route('/meeting_delete', methods=['GET', 'POST'])
+@app.route('/meeting_delete', methods=['POST'])
 @login_required
 def meeting_delete():
     print 'Here in meeting_delete!'
@@ -701,6 +718,8 @@ def muddies():
             submit_flag = 1
                             
         db.session.commit()
+    elif request.method == "GET":
+        return redirect(url_for('index'))
     
     g.muddy_form = MuddyForm()
     if request.method=='POST' and g.muddy_form.validate_on_submit():
@@ -752,7 +771,7 @@ def muddies():
                             meeting=meeting)
 
 
-@app.route('/feedback_delete', methods=['GET', 'POST'])
+@app.route('/feedback_delete', methods=['POST'])
 @login_required
 def feedback_delete():
     print 'Here in muddy_delete!'
@@ -832,7 +851,7 @@ def send_course_view():
             course = Course.query.get(int(item))
             print 'course is:',int(item), course
             reguser = Reguser.query.get(course.reguser_id)
-            print  'User is:', reguser.nickname
+            print  'User is:', reguser.email
             course_view(reguser,course)
             flash('{} details has been sent to {}'.format(course.title,g.reguser.email))
             #session['course_num'] = course.id
@@ -933,27 +952,25 @@ def google_logout():
     return redirect(url_for('index'))
 
 
-@app.route('/reguser/<nickname>')
-@app.route('/reguser/<nickname>/<int:page>')
+@app.route('/reguser', methods=['GET','POST'])
 @login_required
-def reguser(nickname, page=1):
-    reguser = Reguser.query.filter_by(nickname=nickname).first()
+def reguser():
+    reguser = g.reguser
     print 'the user is:',reguser
     print '\n\n\n Here in user page'
     if reguser is None:
-        flash('User %s not found.' % nickname)
+        flash('User %s not found.' % reguser.email)
         return redirect(url_for('index'))
-    courses = reguser.courses.paginate(page, COURSES_PER_PAGE, False)
-    live_num = courses.query.filter_by(live_stat=True).count()
-    archived_num = courses.query.filter_by(live_stat=False).count()
+    #courses = reguser.courses.paginate(page, COURSES_PER_PAGE, False)
+    #live_num = courses.query.filter_by(live_stat=True).count()
+    #archived_num = courses.query.filter_by(live_stat=False).count()
     
     print "In user view"
     return render_template('reguser.html',
-                           live_num = live_num,
-                           archived_num = archived_num,
-                           reguser=reguser,
-                           courses=courses)
+                           reguser=reguser)
 
+
+"""
 @app.route('/edit', methods=['GET', 'POST'])
 @login_required
 def edit():
@@ -969,7 +986,7 @@ def edit():
         form.nickname.data = g.reguser.nickname
         form.about_me.data = g.reguser.about_me
     return render_template('edit.html', form=form)
-
+"""
 
 @app.route('/search', methods=['POST'])
 @login_required
@@ -990,7 +1007,7 @@ def search():
                            results_form=results_form,
                            results_folder=results_folder)
 
-
+"""
 @app.route('/index', methods=['GET', 'POST'])
 @app.route('/new_form', methods=['GET','POST'])
 #@login_required
@@ -1048,10 +1065,13 @@ def new_demo_form():
     else:
         return str(g.demo_form.errors)
 
-
+"""
 @app.route('/get_test_code', methods=['GET','POST'])
 def get_test_code():
     print 'Here in register beta_form!'
+    if g.reguser.is_authenticated:
+        return redirect(url_for('index'))
+    
     if request.method == "POST" and g.wantbeta_form.validate_on_submit():
         print '\n\nHere in register beta_form2!'
         print 'Inside wantbeta'
@@ -1067,9 +1087,13 @@ def get_test_code():
             db.session.commit()
             eoi_noted(wantbeta.email)
             return render_template('eoi_noted.html')
+    elif request.method == 'GET':
+        return render_template('register_beta_form.html')
 
 @app.route('/register_beta', methods=['GET','POST'])
 def register_beta():
+    if g.reguser.is_authenticated:
+        return redirect(url_for('index'))
     print 'Validating test code'
     if request.method == "POST" and g.gen_form.validate_on_submit():
         print '\n\nHere in register beta_form3!'
@@ -1092,6 +1116,8 @@ def delete_account():
 
 @app.route('/free_acad_accnt', methods=['GET','POST'])
 def free_acad_accnt():
+    if g.reguser.is_authenticated:
+        return redirect(url_for('index'))
     print 'Here in free academic account!'
     if request.method == "POST" and g.wantbeta_form.validate_on_submit():
         print '\n\nForm validated'
