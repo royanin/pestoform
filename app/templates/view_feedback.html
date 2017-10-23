@@ -13,7 +13,9 @@
         <span style="padding-left:5px"></span>&raquo;<span style="padding-left:10px"></span>
         <a href="#" onclick="document.getElementById('select-folder-{{ meeting.course.id }}').submit()">
                                 {{ meeting.course.title }}</a>
-        <span>{% include "select_folder.html" %}</span>
+        <span>
+            {% include "select_folder.html" %}
+        </span>
         <span style="padding-left:5px"></span>&raquo;<span style="padding-left:10px"></span>
         <span><i class="fa fa-file-text-o" aria-hidden="true"></i></span>&nbsp;{{ meeting.title }}
     </div>
