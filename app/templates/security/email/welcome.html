@@ -1,0 +1,18 @@
+<p>{{ _('Welcome %(email)s!', email=user.email) }}</p>
+
+{% if security.confirmable %}
+<p>{{ _('Someone (most likely you) requested an account at Pestoform') }}</p>
+<p>{{ _('You can confirm your account by clicking on the link below:') }}</p>
+
+<p><a href="{{ confirmation_link }}">{{ _('Confirm my account at https://pestoform.com') }}</a></p>
+
+<p>{{ _('Alternatively, copy-paste the link in your browser:') }}</p>
+<p>{{ confirmation_link }}</p>
+
+<hr>
+<p>{{ _('If you did not request this account, email us at admin@pestoform.com') }}</p>
+{% endif %}
+
+<p>Thanks,</p>
+<p><code>Pestoform</code> admin</p>
+
