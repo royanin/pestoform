@@ -7,8 +7,8 @@ from urlparse import urlparse, urljoin
 from dateutil import parser
 import pytz
 from app import app, db, lm #, oid
-from .forms import LoginForm, EditForm, CourseForm, MeetingForm, SearchForm, ChangeIndexForm, MuddyForm, DemoForm, WantbetaForm, GenForm
-from .models import Role, Reguser, Course, Meeting, Muddy, Demo, Wantbeta
+from .forms import LoginForm, EditForm, CourseForm, MeetingForm, SearchForm, ChangeIndexForm, MuddyForm, WantbetaForm, GenForm
+from .models import Role, Reguser, Course, Meeting, Muddy, Wantbeta
 #from .emails import follower_notification
 from config import COURSES_PER_PAGE, MEETINGS_PER_PAGE, FEEDBACK_PER_PAGE, MAX_SEARCH_RESULTS, OAUTH_CREDENTIALS,GOOGLE_CLIENT_ID, SORTING_TYPE
 from .emails import course_view, meeting_view, form_open, eoi_noted, notify_server_error, form_share_email
@@ -45,7 +45,7 @@ def load_user(id):
 def before_request():
     g.reguser = current_user
     g.muddy_form = MuddyForm()
-    g.demo_form = DemoForm()
+    #g.demo_form = DemoForm()
     g.wantbeta_form = WantbetaForm()
     g.gen_form =  GenForm()
     g.GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID
@@ -604,7 +604,7 @@ def meeting_action_edit():
             meeting = Meeting(g.meeting_form.title.data,g.meeting_form.course_id.data,g.meeting_form.prompt.data,g.meeting_form.close_opt.data,30*24*int(g.meeting_form.live_till_month.data) + 24*int(g.meeting_form.live_till_days.data) + int(g.meeting_form.live_till_hours.data))
             meeting.close_stat = 0
             meeting.reguser_id = g.reguser.id
-            meeting.demo_email = "NA"
+            #meeting.demo_email = "NA"
             meeting.blank_response = 0
             session['course_num'] = meeting.course_id
             
@@ -740,7 +740,7 @@ def muddies():
                 muddy = Muddy(g.muddy_form.body.data,g.muddy_form.meeting_id.data,like_count)
 
                 muddy.reguser_id = meeting.reguser_id
-                muddy.demo_email = meeting.demo_email
+                #muddy.demo_email = meeting.demo_email
                     
                 print muddy
                 
@@ -1007,65 +1007,7 @@ def search():
                            results_form=results_form,
                            results_folder=results_folder)
 
-"""
-@app.route('/index', methods=['GET', 'POST'])
-@app.route('/new_form', methods=['GET','POST'])
-#@login_required
-def new_form():
-    print 'Here in new_form!'
-    return render_template('new_demo_form.html')
 
-@app.route('/new_demo_form', methods=['POST'])
-def new_demo_form():
-    g.demo_form = DemoForm()
-    print 'In new_demo_form()'
-    #results = request.demo_form.getlist('id')
-    #print 'demo_form, id:', results
-    if request.method == "POST" and g.demo_form.validate_on_submit():
-        print 'In new_demo_form() inside'
-        test_code_lite = g.demo_form.test_code_lite.data
-        if test_code_lite != "test_test":
-            return redirect("index.html")
-        title = g.demo_form.title.data
-        prompt = g.demo_form.prompt.data
-        demo_email = g.demo_form.demo_email.data
-        demo = Demo.query.filter_by(email=demo_email).first()
-
-        
-        print '\n\n in new_demo_form', title, prompt, demo_email
-        if demo is None:
-            reguser = Reguser.query.filter_by(email=demo_email).first()
-            if reguser is None:
-                print '\n demo is none'
-                demo = Demo(demo_email)
-                db.session.add(demo)
-                db.session.commit()
-            else:
-                return render_template('redirect_account.html')
-                #return redirect(url_for('index')+'#login')
-
-        course_id = 2
-        reguser_id = 1
-        close_opt = 2
-        live_till_hours = 14*24 #(2 weeks)
-        
-        meeting = Meeting(title,course_id,prompt,close_opt,live_till_hours)
-        meeting.reguser_id = reguser_id
-        meeting.demo_email = demo_email
-        meeting.close_stat = 0
-        meeting.blank_response = 0
-        #meeting = Meeting_demo(title, prompt,demo_email)
-        db.session.add(meeting)
-        db.session.commit()
-        
-        form_open(meeting.demo_email,meeting)
-        return render_template(('demo_form_created.html'),
-                            meeting=meeting)
-
-    else:
-        return str(g.demo_form.errors)
-
-"""
 @app.route('/get_test_code', methods=['GET','POST'])
 def get_test_code():
     print 'Here in register beta_form!'

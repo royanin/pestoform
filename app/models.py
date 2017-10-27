@@ -112,7 +112,7 @@ class Meeting(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey('course.id', ondelete='CASCADE'), nullable=False)
     reguser_id = db.Column(db.Integer, db.ForeignKey('reguser.id', ondelete='CASCADE'), nullable=False)
-    demo_email = db.Column(db.String(100), db.ForeignKey('demo.email', ondelete='CASCADE'), nullable=False)
+    #demo_email = db.Column(db.String(100), db.ForeignKey('demo.email', ondelete='CASCADE'), nullable=False)
     title = db.Column(db.String(100))  #a tweet length
     type_meeting = db.Column(db.Integer) #0: class, 1: seminar 2: meeting
     close_stat = db.Column(db.Integer) #0: open (getting feedback), 1: closed (comments still visible) 2: closed (comments no longer visible)
@@ -149,7 +149,7 @@ class Muddy(db.Model):
     timestamp = db.Column(db.DateTime)
     meeting_id = db.Column(db.Integer, db.ForeignKey('meeting.id', ondelete='CASCADE'), nullable=False)
     reguser_id = db.Column(db.Integer, db.ForeignKey('reguser.id', ondelete='CASCADE'), nullable=False)
-    demo_email = db.Column(db.String(100), db.ForeignKey('demo.email', ondelete='CASCADE'), nullable=False)
+    #demo_email = db.Column(db.String(100), db.ForeignKey('demo.email', ondelete='CASCADE'), nullable=False)
 
     def __init__(self,body,meeting_id,like_count):
         self.body = body
@@ -165,23 +165,7 @@ if enable_search:
     whooshalchemy.whoosh_index(app, Meeting)
     whooshalchemy.whoosh_index(app, Muddy)
 
-class Demo(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100), index=True, nullable=False, unique=True)
-    all_meetings = db.relationship('Meeting', backref='demo', lazy='dynamic', cascade="all, delete-orphan")
-    all_muddies = db.relationship('Muddy', backref='demo', lazy='dynamic', cascade="all, delete-orphan")
 
-    def get_id(self):
-        try:
-            return unicode(self.id)  # python 2
-        except NameError:
-            return str(self.id)  # python 3
-
-    def __repr__(self):
-        return '<Demo %r>' % (self.email)
-
-    def __init__(self,email):
-        self.email = email
 
 
 class Wantbeta(db.Model):

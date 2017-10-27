@@ -69,19 +69,6 @@ class SearchForm(Form):
     search = StringField('search', validators=[DataRequired()])
 
 
-class DemoForm(Form):
-    id = HiddenField()
-    title = StringField('title', validators=[DataRequired()])
-    prompt = StringField('prompt')
-    test_code_lite =  StringField('test_code_lite')
-    demo_email = EmailField('demo_email', validators=[DataRequired(), validators.Email()])
-    #note =  TextAreaField('note')
-    #close_opt = IntegerField('close_opt')
-    #live_till_month = IntegerField('live_till_month')
-    #live_till_days = IntegerField('live_till_days')
-    #live_till_hours = IntegerField('live_till_hours')
-
-
 class WantbetaForm(Form):
     id = HiddenField()
     #test_code =  StringField('test_code')
