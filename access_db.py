@@ -1,6 +1,6 @@
 from app import db, models
-#u = models.User.query.filter_by(email="royanin.qn@gmail.com").first()
-users = models.User.query.all()
+#u = models.Reguser.query.filter_by(email="royanin.qn@gmail.com").first()
+users = models.Reguser.query.all()
 for u in users:
     print u.id, u.nickname, u.email, u.password
 """
