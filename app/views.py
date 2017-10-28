@@ -7,7 +7,7 @@ from urlparse import urlparse, urljoin
 from dateutil import parser
 import pytz
 from app import app, db, lm #, oid
-from .forms import LoginForm, EditForm, CourseForm, MeetingForm, SearchForm, ChangeIndexForm, MuddyForm, WantbetaForm, GenForm
+from .forms import LoginForm, EditForm, CourseForm, MeetingForm, SearchForm, ChangeIndexForm, MuddyForm, EmailForm, GenForm
 from .models import Role, Reguser, Course, Meeting, Muddy, Wantbeta
 #from .emails import follower_notification
 from config import COURSES_PER_PAGE, MEETINGS_PER_PAGE, FEEDBACK_PER_PAGE, MAX_SEARCH_RESULTS, OAUTH_CREDENTIALS,GOOGLE_CLIENT_ID, SORTING_TYPE
@@ -46,7 +46,7 @@ def before_request():
     g.reguser = current_user
     g.muddy_form = MuddyForm()
     #g.demo_form = DemoForm()
-    g.wantbeta_form = WantbetaForm()
+    g.email_form = EmailForm()
     g.gen_form =  GenForm()
     g.GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID
 
@@ -1008,29 +1008,6 @@ def search():
                            results_folder=results_folder)
 
 
-@app.route('/get_test_code', methods=['GET','POST'])
-def get_test_code():
-    print 'Here in register beta_form!'
-    if g.reguser.is_authenticated:
-        return redirect(url_for('index'))
-    
-    if request.method == "POST" and g.wantbeta_form.validate_on_submit():
-        print '\n\nHere in register beta_form2!'
-        print 'Inside wantbeta'
-        email = g.wantbeta_form.email.data
-        wantbeta = Wantbeta.query.filter_by(email=email).first()
-        if wantbeta is not None:
-            #Send email even if it already exists!
-            eoi_noted(wantbeta.email)
-            return render_template('eoi_noted.html')
-        else:
-            wantbeta = Wantbeta(email)
-            db.session.add(wantbeta)
-            db.session.commit()
-            eoi_noted(wantbeta.email)
-            return render_template('eoi_noted.html')
-    elif request.method == 'GET':
-        return render_template('register_beta_form.html')
 
 @app.route('/register_beta', methods=['GET','POST'])
 def register_beta():
@@ -1061,9 +1038,9 @@ def free_acad_accnt():
     if g.reguser.is_authenticated:
         return redirect(url_for('index'))
     print 'Here in free academic account!'
-    if request.method == "POST" and g.wantbeta_form.validate_on_submit():
+    if request.method == "POST" and g.email_form.validate_on_submit():
         print '\n\nForm validated'
-        email = g.wantbeta_form.email.data
+        email = g.email_form.email.data
         email_domain = email.split("@")[1]
         print email_domain
 

@@ -69,7 +69,7 @@ class SearchForm(Form):
     search = StringField('search', validators=[DataRequired()])
 
 
-class WantbetaForm(Form):
+class EmailForm(Form):
     id = HiddenField()
     #test_code =  StringField('test_code')
     email = EmailField('email', validators=[validators.Email()])
