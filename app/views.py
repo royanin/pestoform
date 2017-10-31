@@ -8,7 +8,7 @@ from dateutil import parser
 import pytz
 from app import app, db, lm #, oid
 from .forms import LoginForm, EditForm, CourseForm, MeetingForm, SearchForm, ChangeIndexForm, MuddyForm, EmailForm, GenForm
-from .models import Role, Reguser, Course, Meeting, Muddy, Wantbeta
+from .models import Role, Reguser, Course, Meeting, Muddy, EmailList
 #from .emails import follower_notification
 from config import COURSES_PER_PAGE, MEETINGS_PER_PAGE, FEEDBACK_PER_PAGE, MAX_SEARCH_RESULTS, OAUTH_CREDENTIALS,GOOGLE_CLIENT_ID, SORTING_TYPE
 from .emails import course_view, meeting_view, form_open, eoi_noted, notify_server_error, form_share_email
@@ -396,6 +396,8 @@ def course_action_edit():
         #print 'form validated on submit'
     if request.method == "POST" and g.course_form.validate_on_submit():
         print 'In course_create view2'
+        print 'Session: ', session
+        print 'Request: ',request
     #if g.course_form.validate_on_submit():
         id = g.course_form.id.data
         if (id):

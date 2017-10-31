@@ -14,6 +14,11 @@ else:
     enable_search = True
     import flask_whooshalchemy as whooshalchemy
 
+meeting_emails = db.Table('meeting_emails',
+        db.Column('meeting_id', db.Integer, db.ForeignKey('meeting.id')),
+        db.Column('email_id', db.Integer, db.ForeignKey('email.id')))
+
+    
 roles_users = db.Table('roles_users',
         db.Column('reguser_id', db.Integer(), db.ForeignKey('reguser.id')),
         db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
@@ -125,6 +130,7 @@ class Meeting(db.Model):
     note = db.Column(db.String(500))
     muddies = db.relationship('Muddy', backref='meeting', lazy='dynamic', cascade="all, delete-orphan")
     blank_response = db.Column(db.Integer)
+    emails = db.relationship("EmailList", secondary=meeting_emails, backref=db.backref('meetings', lazy='dynamic'))
 
     def __init__(self,title,course_id,prompt,close_opt,live_till_hours):
         self.title = title
@@ -160,18 +166,20 @@ class Muddy(db.Model):
     def __repr__(self):
         return '<Muddy %r>' % self.body
 
+
+class EmailList(db.Model):
+    __tablename__ = 'email'
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(100), index=True, nullable=False, unique=True)
+
+
+    def __init__(self,email):
+        self.email = email
+
+    def __repr__(self):
+        return '<Email %r>' % self.email
+    
 if enable_search:
     whooshalchemy.whoosh_index(app, Course)
     whooshalchemy.whoosh_index(app, Meeting)
     whooshalchemy.whoosh_index(app, Muddy)
-
-
-
-
-class Wantbeta(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(100), index=True, nullable=False, unique=True)
-    #get region/browser/OS later?
-
-    def __init__(self,email):
-        self.email = email

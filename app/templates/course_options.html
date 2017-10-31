@@ -6,16 +6,17 @@
                 </button>
     <ul class="dropdown-menu" aria-labelledby="folder-dropdown-{{ var.id }}">
     <li>
-                <a href="#" onclick="document.getElementById('form-download-course-{{ var.id }}').submit()"> Download folder details </a>
-                <form action='/dl_csv_course' method="post" id = "form-download-course-{{ var.id }}" name="post">
+                <form action='/dl_csv_course' method="post" id = "form-download-course-{{ var.id }}" name="post" >
                 {{ g.course_form.id(type = 'hidden', value=var.id) }}
                 </form>
+                <a href="#" onclick="document.getElementById('form-download-course-{{ var.id }}').submit()"> Download folder details </a>
     </li>
     <li>
                 <form action='/send_course_view' method="post" id = "form-email-course-{{ var.id }}" name="post">
                 {{ g.course_form.id(type = 'hidden', value=var.id) }}
                 </form>
-                <a  href="#" onclick="document.getElementById('form-email-course-{{ var.id }}').submit()">   Email folder details</a>
+                <a  href="#" onclick="document.getElementById('form-email-course-{{ var.id }}').submit()" >   Email folder details</a>
+
     </li>
     
             <form action='/course_archive' method="post" id = "form-archive-course-{{ var.id }}" name="post">
