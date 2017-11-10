@@ -1,4 +1,5 @@
-<p>Dear {{ reguser.email }},</p>
+<p>{# Dear {{ to_email }},#}
+Dear <code>Pestoform</code> user,</p>
 
 This is an email containing the form <b>{{ meeting.title }}</b> and the feedback therein.
 <br><br>
@@ -7,9 +8,8 @@ This is an email containing the form <b>{{ meeting.title }}</b> and the feedback
 {% endwith %}
 
 <br><br>
-<p>(1) "#BR" represents the total number of "nothing to add" responses on the feedback form.</p>
-<p>(2) "#Likes" represents the total number of upvotes a comment received.</p>
-<p>(3) "#FB" represents the total number of comments a form received.</p>
+<p>(1) "#Likes" represents the total number of upvotes a comment received.</p>
+<p>(2) "#FB" represents the total number of comments a form received.</p>
 
 <p>Regards,</p>
 <p>The <code>Pestoform</code> admin</p>

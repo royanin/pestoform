@@ -1,4 +1,5 @@
-Dear {{ reguser.email }},
+{# Dear {{ to_email }} ,#}
+Dear Pestoform user,
 
 This is just a test email about your course {{ meeting.title }}!
 

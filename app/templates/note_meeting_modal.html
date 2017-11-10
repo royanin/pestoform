@@ -13,7 +13,8 @@
     <div class="modal-body">
                 <div class="form-group">
                     <div class="col-sm-12">
-                    {{ g.meeting_form.note(id= var.url_string, rows=3,  maxlength="500", class="form-control", placeholder="Add a note", value= var.note ) }}
+                    {# {{ g.meeting_form.note(id= var.url_string, rows=3,  maxlength="500", class="form-control", placeholder="Add a note", value= var.note ) }} #}
+                    <textarea id="{{ var.url_string }}", class="form-control" name="note">{{ var.note }}</textarea>
                     </div>
                 </div>
 

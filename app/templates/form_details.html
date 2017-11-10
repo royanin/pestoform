@@ -1,10 +1,14 @@
 <table class="table table-striped">
         <tr><div class="col-md-6"><b>Title:</b> {{ var.title }}</div></tr>
         <tr><div class="col-md-6"><b>Prompt:</b> {{ var.prompt }}</div></tr>
-        <tr><div class="col-md-6"><b>Note:</b> {{ var.note }}</div></tr>
+        
+    {% if to_owner==True %}
+            <tr><div class="col-md-6"><b>Note:</b> {{ var.note }}</div></tr>
+    {% endif %}
         <tr><div class="col-md-6"><b>URL:</b> <a href="{{ config.SITE }}/m/{{ var.url_string }}">{{ config.SITE }}/m/{{ var.url_string }}</a></div></tr>
-        <tr><div class="col-md-6"><b>#BR:</b> {{ var.blank_response }}</div></tr>
-        <tr><div class="col-md-6"><b>Created (UTC):</b> {{ var.timestamp }}</div></tr>
+        
+    {% if to_owner==True %}
+        <tr><div class="col-md-6"><b>Created (UTC):</b> {{ var.timestamp.strftime("%b %d '%y, %H:%M hrs") }}</div></tr>
         <tr><div class="col-md-6"><b>Accepting feedback now?</b>&nbsp;
                 {% if var.close_stat > 0 %}
                     No
@@ -12,18 +16,21 @@
                     Yes
                 {% endif %}
             </div></tr>
+    {% endif %}
         
 </table>
 {% if  var.muddies.count()>0 %}
 <p>Comments and #Likes for form <b>{{ var.title }}</b> </p>
 <table class="table table-striped">
     <tr valign="top">
-        <td><div class="col-md-2"><b>#Likes</b></div></td>
-        <td><div class="col-md-6"><b>&ensp;Comments</b></div></td>
+        <td><div class="col-md-3"><b>#Likes&ensp;</b></div></td>
+        <td><div class="col-md-3"><b>&nbsp;Time (UTC)</b></div></td>
+        <td><div class="col-md-7"><b>&ensp;Comments</b></div></td>
     </tr>
     {% for muddy in var.muddies %}
     <tr valign="top">
         <td><div class="col-md-2"><b>{{ muddy.like_count }}</b></div></td>
+        <td><div class="col-md-2">{{ muddy.timestamp.strftime("%b %d '%y, %H:%M hrs") }}</div></td>
         <td><div class="col-md-6">{{ muddy.body }}</div></td>
     </tr>
     {% endfor %}

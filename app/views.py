@@ -306,6 +306,8 @@ def view(page=1):
         
     for meet in meetings_sorted:
         print meet.id, meet.reguser_id, meet.title, meet.timestamp, meet.muddies.count()
+        if meet.close_stat == 0 and (meet.live_till < datetime.utcnow()):
+            meet.close_stat = meet.close_opt
 
     live_num = g.reguser.courses.filter_by(live_stat=True).count()
     archived_num = g.reguser.courses.filter_by(live_stat=False).count()
@@ -510,9 +512,13 @@ def meeting_close():
 
         meeting = Meeting.query.get(meeting_id)
         print meeting, meeting.id, meeting.close_stat
-
+        if meeting.close_stat == 0 and int(results2) > 0:
+            list_emails = [item.email for item in meeting.emails]
+            list_emails.append(meeting.reguser.email)
+            meeting_view(list_emails,meeting)
         meeting.close_stat = int(results2)
         db.session.commit()
+        
         print 'meeting live till:', meeting.live_till
         print 'meeting is:',id, meeting
         if meeting.close_stat == 0 and (meeting.live_till < datetime.utcnow()):
@@ -539,6 +545,10 @@ def meeting_delete():
         if (item):
             meeting = Meeting.query.get(int(item))
             print 'meeting is:',int(item), meeting
+            print 'following emails: ', meeting.emails
+            list_emails = [item.email for item in meeting.emails]
+            list_emails.append(meeting.reguser.email)
+            meeting_view(list_emails,meeting)
             flash('{} (under {}) has been deleted!'.format(meeting.title, meeting.course.title))
             db.session.delete(meeting)
             db.session.commit()
@@ -666,115 +676,10 @@ def view_feedback(url_string,page=1):
                            muddies_total=muddies_total)
                            #g.muddy_form = MuddyForm())
 
-@app.route('/m/<url_string>', methods=['GET', 'POST'])
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/index', methods=['GET', 'POST'])
-#@app.route('/index/<int:page>', methods=['GET', 'POST'])
-def m(url_string):
-    print '\n\n\nin m: url_string:',url_string
-    #
-    meeting = Meeting.query.filter_by(url_string=url_string).first()
-    #print 'meeting.id:, request.method',meeting.id, request.method
-    muddy = None 
-
-    if  meeting == None:
-        return render_template('form_not_found.html')
-
-
-    else:
-        meeting_id = meeting.id
-        muddies = meeting.muddies
-        #print 'muddy id:',g.muddy_form.id.data
-        session['url_string'] = url_string
-
-        #Determine close_stat based on live_till:
-        if datetime.utcnow() > meeting.live_till:
-            print 'meeting live_till',meeting.live_till
-            print 'time now:', datetime.utcnow()
-            print 'meeting.close_stat, meeting.close_opt:', meeting.close_stat,meeting.close_opt
-            meeting.close_stat = meeting.close_opt
-            db.session.commit()
-            
-        return render_template(('muddies.html'),
-                           url_string=url_string,
-                           meeting=meeting,
-                           muddies=muddies)
-                           #g.muddy_form = MuddyForm())
-
-@app.route('/muddies', methods=['GET', 'POST'])
-@app.route('/', methods=['GET', 'POST'])
-@app.route('/index', methods=['GET', 'POST'])
-def muddies():
-    submit_flag = 0
-    if request.method == "POST":
-        #results = request.g.muddy_form.getlist('vote')
-        #results = request.form.getlist('vote')
-        results = request.form.getlist('muddy_id')
-        #if results[0]=='vote':
-        print '\n\n\n results:',results
-        for item in results:
-            print item
-            muddy = Muddy.query.get(item)
-            print muddy
-            muddy.like_count += 1
-            submit_flag = 1
-                            
-        db.session.commit()
-    elif request.method == "GET":
-        return redirect(url_for('index'))
-    
-    g.muddy_form = MuddyForm()
-    if request.method=='POST' and g.muddy_form.validate_on_submit():
-        url_string = session['url_string']
-        meeting = Meeting.query.filter_by(url_string=url_string).first()
-        id = g.muddy_form.id.data
-        
-        #if (id):
-            #muddy = Muddy.query.get(id)
-            #muddy.like_count = g.muddy_form.like_count.data
-           
-            #print '\nMuddy like count:',muddy.like_count
-        
-        if not (id):
-            if (g.muddy_form.body.data):
-                print 'Muddy body:', g.muddy_form.body.data
-                like_count = 0
-                muddy = Muddy(g.muddy_form.body.data,g.muddy_form.meeting_id.data,like_count)
-
-                muddy.reguser_id = meeting.reguser_id
-                #muddy.demo_email = meeting.demo_email
-                    
-                print muddy
-                
-                db.session.add(muddy)
-                db.session.commit()
-            elif submit_flag == 0:
-                meeting.blank_response += 1
-                db.session.commit()
-                print meeting.blank_response
-                print 'No muddy created...'
-                return render_template('/submitted_empty.html',
-                                       meeting=meeting)
-
-
-        else:
-            print 'Not rendered properly'
-            print '\n\n',g.muddy_form.errors
-            return redirect(url_for('index'))
-        
-
-        url_string = session['url_string']
-        print '\n\n\nin muddies -- url_string:',session['url_string']
-
-        #flash('Your muddy is now live!')
-    #return redirect(url_for('m', url_string=session['url_string']))
-    
-    return render_template('/submitted.html',
-                            meeting=meeting)
 
 
 @app.route('/feedback_delete', methods=['POST'])
-@login_required
+#@login_required
 def feedback_delete():
     print 'Here in muddy_delete!'
     results = request.form.getlist('muddy_id')
@@ -783,12 +688,27 @@ def feedback_delete():
         print 'item:',item
         if (item):
             muddy = Muddy.query.get(int(item))
-            print 'muddy is:',int(item), muddy
-            flash('The selected feedback (under meeting {}, course {}) has been deleted!'.format(muddy.meeting.title, muddy.meeting.course.title))
-            db.session.delete(muddy)
-            db.session.commit()
-            return redirect(url_for('view_feedback', url_string=session['bc_url'], page=1))
-
+            if muddy is not None:
+                print 'muddy is:',int(item), muddy
+                meeting_title = muddy.meeting.title
+                course_title = muddy.meeting.course.title
+            
+                db.session.delete(muddy)
+                db.session.commit()
+            
+                if g.reguser.is_authenticated:
+                    flash('The selected feedback (under meeting {}, course {}) has been deleted!'.format(meeting_title, course_title))
+                    return redirect(url_for('view_feedback', url_string=session['bc_url'], page=1))
+                else:
+                    flash('The selected feedback has been deleted!')
+                    return redirect(url_for('m', url_string=session['url_string']))
+            else:
+                flash('The selected comment has been deleted!')
+                if g.reguser.is_authenticated:
+                    return redirect(url_for('view_feedback', url_string=session['bc_url'], page=1))
+                else:
+                    return redirect(url_for('m', url_string=session['url_string']))
+                
 #@app.route('/')
 @app.route('/dl_csv_course', methods=['POST'])
 @login_required
@@ -876,7 +796,7 @@ def send_meeting_view():
             print 'meeting is:',int(item), meeting
             reguser = Reguser.query.get(meeting.reguser_id)
             print  'User is:', reguser.email
-            meeting_view(reguser,meeting)
+            meeting_view([reguser.email],meeting)
             flash('{} details has been sent to {}'.format(meeting.title,g.reguser.email))
             #session['course_num'] = meeting.course_id
             #session['course_title'] = course.title
@@ -1069,3 +989,200 @@ def free_acad_accnt():
         session['message'] = "Something strange happened. Please try again!"
         return render_template("message.html")
         
+
+
+@app.route('/email_feedback_update', methods=['GET','POST'])
+def email_feedback_update():
+    print 'Here in email feedback update!'
+    if request.method == "POST" and g.email_form.validate_on_submit():
+        print '\n\nForm validated'
+        meeting_id = g.gen_form.id.data
+        meeting = Meeting.query.get(meeting_id)
+        
+        email = g.email_form.email.data
+        email_domain = email.split("@")[1]
+        print email_domain
+
+        print [item.email for item in meeting.emails]
+        
+        exist_email = EmailList.query.filter_by(email=email).first()
+        
+        if exist_email is None:
+            exist_email = EmailList(email)
+            db.session.add(exist_email)
+            db.session.commit()
+            
+            
+        print 'EmailList', exist_email.id, exist_email.email
+        meeting.emails.append(exist_email)
+        db.session.add(meeting)
+        db.session.commit()
+        
+        meeting_view([email],meeting)
+        return ('', 204)
+
+
+    else:
+        session['message'] = "Something strange happened. Please try again!"
+        return render_template("message.html")
+
+
+
+@app.route('/email_submit', methods=['post'])
+def email_submit():
+    print "email submit"
+    email = request.form['s']
+    print 'email_in', email
+
+    meeting = Meeting.query.filter_by(url_string=session['url_string']).first()
+    print meeting.emails
+    exist_email = EmailList.query.filter_by(email=email).first()
+        
+    if exist_email is None:
+        exist_email = EmailList(email)
+        db.session.add(exist_email)
+        db.session.commit()
+
+    email_list = [item.email for item in meeting.emails]
+
+    print email_list
+    if email not in email_list:
+        meeting.emails.append(exist_email)
+        db.session.add(meeting)
+        db.session.commit()
+        
+    meeting_view([email],meeting)
+        
+    if email == "":
+        return jsonify(data={'message':'Sorry, we couldn\'t record a valid email id.' })
+    else:
+        return jsonify(data={'message':'Hello, '+email+'! You\'ll hear from us soon.' })
+    
+    
+@app.route('/vote', methods=['POST'])
+#@login_required
+def vote():
+    print "In vote!\n\n"
+    a = request.form["itemId"]
+    b = request.form["vStat"]
+
+    print 'a',a
+    print 'b',int(b)
+    muddy = Muddy.query.filter_by(id=int(a)).first()
+    
+    if muddy is not None:
+        muddy.like_count += int(b)
+        db.session.add(muddy)
+        db.session.commit()
+        return jsonify(data={'like':muddy.like_count })
+    else:
+        return jsonify(data={'like':'NA' })
+
+@app.route('/m/<url_string>', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+#@app.route('/index/<int:page>', methods=['GET', 'POST'])
+def m(url_string):
+    print '\n\n\nin m: url_string:',url_string
+    #
+    meeting = Meeting.query.filter_by(url_string=url_string).first()
+    #print 'meeting.id:, request.method',meeting.id, request.method
+    muddy = None 
+
+    if  meeting == None:
+        return render_template('form_not_found.html')
+
+
+    else:
+        meeting_id = meeting.id
+        muddies = meeting.muddies
+        #print 'muddy id:',g.muddy_form.id.data
+        session['url_string'] = url_string
+        #g.muddy_form(form)
+
+        #Determine close_stat based on live_till:
+        if datetime.utcnow() > meeting.live_till:
+            print 'meeting live_till',meeting.live_till
+            print 'time now:', datetime.utcnow()
+            print 'meeting.close_stat, meeting.close_opt:', meeting.close_stat,meeting.close_opt
+            meeting.close_stat = meeting.close_opt
+            db.session.commit()
+            
+        return render_template(('muddies.html'),
+                           url_string=url_string,
+                           meeting=meeting,
+                           muddies=muddies)
+                           #g.muddy_form = MuddyForm())
+        
+@app.route('/muddies', methods=['POST'])
+def muddies():
+
+    g.muddy_form = MuddyForm()
+    if request.method=='POST' and g.muddy_form.validate_on_submit():
+        url_string = session['url_string']
+        meeting = Meeting.query.filter_by(url_string=url_string).first()
+        id = g.muddy_form.id.data
+        
+        
+        if not (id):
+            if (g.muddy_form.body.data):
+                print 'Muddy body:', g.muddy_form.body.data
+                like_count = 0
+                muddy = Muddy(g.muddy_form.body.data,g.muddy_form.meeting_id.data,like_count)
+
+                muddy.reguser_id = meeting.reguser_id
+                #muddy.demo_email = meeting.demo_email
+                    
+                print muddy
+                
+                db.session.add(muddy)
+                db.session.commit()
+                                
+                session['editable_mud'] = muddy.id
+                print session['editable_mud']
+
+                
+                return redirect(url_for('m', url_string=url_string))
+                              
+            else:
+                return str('Sorry, no comment detected')
+
+
+        else:
+            #print 'Not rendered properly'
+            #print '\n\n',g.muddy_form.errors
+            muddy = Muddy.query.filter_by(id=id).first()
+            
+            #return redirect(('muddies.html'),meeting=meeting)
+            return redirect(url_for('m', url_string=url_string))
+        
+
+        url_string = session['url_string']
+        print '\n\n\nin muddies -- url_string:',session['url_string']
+
+    else:
+        return ('',204)
+        
+    
+@app.route('/edit_feedback', methods=['POST'])
+def edit_feedback():
+    print "in edit_feedback"
+    if request.method == "POST" and g.muddy_form.validate_on_submit():
+        #meeting = Meeting.query.filter_by(url_string=url_string).first()
+        id = g.muddy_form.id.data
+        url_string = session['url_string']
+        print 'In edit feedback',id
+        if not (id):
+            return str("Sorry. Can't find that comment!")
+        else:
+            muddy = Muddy.query.filter_by(id=id).first()
+            muddy.body = g.muddy_form.body.data
+            db.session.add(muddy)
+            db.session.commit()
+            session['editable_mud'] = muddy.id
+            print session['editable_mud']
+
+            return redirect(url_for('m', url_string=url_string))
+
+    else:
+        return  ("",204)

@@ -51,9 +51,9 @@
         {% else %}
         <br><em>{{ meeting.title }}</em> has no feedback yet
         {% endif %}
-        {% if meeting.blank_response > 0 %}
+        {# {% if meeting.blank_response > 0 %}
             &bull; "Nothing to add" response(s): {{ meeting.blank_response }}
-        {% endif %}
+        {% endif %} #}
     </div>
     <div>
                   {#  {% if muddies_total >= 0 %}
@@ -62,12 +62,15 @@
                         <div class="panel-custom">
                             {{ muddy.body }}<br>
                             <span style="font-size:80%; color:#777777">{{ muddy.like_count }} <i class="fa fa-heart-o" aria-hidden="true"></i></span>
+                            &bull;
                             {% with var = muddy %}
                             <button class="btn btn-xs btn-default" aria-label="delete-muddy-modal" data-toggle="modal" data-target="#delete-muddy-modal-{{ muddy.id }}">
                             <span><i class="fa fa-trash-o" aria-hidden="true"></i></span>
                             </button>
                             {% include 'delete_muddy_modal.html' %}
                             {% endwith %}
+                            &bull;
+                            <span style="font-size:80%; color:#777777">{{ momentjs(muddy.timestamp.strftime("%Y-%m-%dT%H:%M:%S Z")).format("MMM Do 'YY, hh:mm a") }}</span>
 
                         </div>
                         {% endfor %}
@@ -89,6 +92,7 @@
     {% endif %}
             
 </div>
+    <div class="divider-5"></div>
 </div>
 </div>
 {% endblock %}

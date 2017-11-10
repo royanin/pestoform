@@ -37,10 +37,6 @@ class CourseForm(Form):
     title = StringField('title', validators=[DataRequired()])
     #body = StringField('body', validators=[DataRequired()])
     level = IntegerField('level', validators=[DataRequired()])
-    #sbj1 =  StringField('sbj1')
-    #sbj2 =  StringField('sbj2')
-    #sbj3 =  StringField('sbj3')
-    
     id = HiddenField()
 
 class MeetingForm(Form):
@@ -55,10 +51,8 @@ class MeetingForm(Form):
     live_till_hours = IntegerField('live_till_hours')
 
 class MuddyForm(Form):
-    body = TextAreaField('body', validators=[Length(min=0, max=300)])
-    #body = StringField('body')
+    body = TextAreaField('body', validators=[Length(min=1, max=700)])
     meeting_id = IntegerField('meeting_id', validators=[DataRequired()])
-    #meeting_id = IntegerField('meeting_id')
     id = HiddenField()
 
 class ChangeIndexForm(Form):
@@ -72,7 +66,7 @@ class SearchForm(Form):
 class EmailForm(Form):
     id = HiddenField()
     #test_code =  StringField('test_code')
-    email = EmailField('email', validators=[validators.Email()])
+    email = EmailField('email', validators=[validators.Email(), DataRequired()])
 
 class GenForm(Form):
     id = HiddenField()
