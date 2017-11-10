@@ -487,7 +487,7 @@ position:relative;
 }
 
 .panel-custom {
-  margin-bottom: 2px;
+  margin-bottom: 5px;
   background-color: #fff;
   border: 5px solid transparent;
   border-radius: 4px;
@@ -495,7 +495,7 @@ position:relative;
           box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
 }
 .panel-group-custom {
-  margin-bottom: 2px;
+  margin-bottom: 3px;
 }
 
 .panel-group-custom .panel + .panel {
