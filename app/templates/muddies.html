@@ -11,40 +11,62 @@
 <p style="font-size:100%; color:#666666">{{ meeting.prompt }}</p>
 {% endif %}
 
-<div class="form-group">
-<form class="form" action="/muddies" method="post" role="form" enctype="multipart/form-data">
+
     
 <div class="container">
 <div class="col-md-12 col-sm-12 col-xs-12">
 {% for item in muddies %}
         <div class="panel-custom">
-        {{ item.body }}
-        <div class="pull-right" name="vote-{{ item.id }}">
-            <span class="badge">{{ item.like_count }}</span>
+            {{ item.body }}<br>
+            <span id="votecount{{ item.id }}" style="font-size:80%; color:#777777">{{ item.like_count }}</span>
             {% if meeting.close_stat == 0 %}
-            <label class="btn btn-primary btn-xs active">
-                <input type="checkbox" name = "muddy_id" unchecked value="{{ item.id }}" autocomplete="off"> +1
-            </label>
+            <span id='uvote{{ item.id }}'>
+                <a href="javascript:vote('{{ item.id }}', '+1', '#votecount{{ item.id }}', '#uvote{{ item.id }}', '#dvote{{ item.id }}','#loading{{ item.id }}');"><button id='vote{{ item.id }}' class="btn btn-xs btn-primary"><span><i class="fa fa-angle-up" aria-hidden="true"></i></span></button></a>
+            </span>
+            <span id='dvote{{ item.id }}'>
+                <a href="javascript:vote('{{ item.id }}', '-1', '#votecount{{ item.id }}','#dvote{{ item.id }}', '#uvote{{ item.id }}','#loading{{ item.id }}');"><button id='vote{{ item.id }}' class="btn btn-xs btn-default"><span><i class="fa fa-angle-down" aria-hidden="true"></i></span></button></a>
+            </span>
+                &bull;
+            <span style="font-size:80%; color:#777777">{{ momentjs(item.timestamp.strftime("%Y-%m-%dT%H:%M:%S Z")).format("MMM Do 'YY, hh:mm a") }}</span>
+                {% if item.id == session['editable_mud'] %}
+                {% with var = item, comment = item.body %}
+                &bull; 
+                <button class="btn btn-xs btn-danger" aria-label="delete-muddy-modal" data-toggle="modal" data-target="#delete-muddy-modal-{{ item.id }}">
+                <span><i class="fa fa-trash-o" aria-hidden="true"></i></span>
+                </button>
+                &bull; 
+                <button class="btn btn-xs btn-info" aria-label="edit-muddy-modal" data-toggle="modal" data-target="#edit-muddy-modal-{{ item.id }}">
+                <span><i class="fa fa-pencil-square-o" aria-hidden="true"></i></span>
+                </button>
+                {% include 'delete_muddy_modal.html' %}
+                {% include 'edit_muddy_modal.html' %}
+                {% endwith %}
+                {% endif %}
             {% endif %}
         </div>
-    </div>
+    
+<script>
+    $(function(){
+    $("#dvote{{ item.id }}").hide();
+});
+</script>
 {% endfor %}
 
     </div>
     </div>
+<div class="form-group">
+<form class="form" action="/muddies" method="post" role="form" enctype="multipart/form-data">
+
 {% if meeting.close_stat == 0 %}
         {{ g.muddy_form.meeting_id(type = 'hidden',value=meeting.id) }}
 <div class="container">
     <div class="row">
     <div class="col-lg-8 col-lg-offset-2">
     <span class="form-control-static pull-right"><div style="font-size:90%; color:#777777" id="count_message"></div></span>
-    {{ g.muddy_form.body(id="text", maxlength="700", rows=6, class="form-control", placeholder="Please provide your comment and/or upvote previous comment(s)") }}
+    {{ g.muddy_form.body(id="text", maxlength="700", rows=6, class="form-control", placeholder="Type your comment here") }}
         <div class="btn-group btn-group-sm pull-right">
-            <button type="submit" class="btn btn-primary" value="save">Submit like(s)/comment</button>
+            <button type="submit" class="btn btn-primary" value="save">Post comment</button>
             {{ g.muddy_form.hidden_tag() }}
-            {#
-            <button type="submit" class="btn btn-default" value="nothing">Nothing to add</button>
-            {{ g.muddy_form.hidden_tag() }} #}
         </div>
 
         {% include "accept_tos.html" %}
@@ -52,10 +74,76 @@
     </div>
     </div>
 {% endif %}
-</form>
+    </form>
 </div>
 
-        <script>
+<div class="container">
+<div class="row">
+<div class="col-lg-8 col-lg-offset-2">
+
+    <h3>Get a copy of this form and the comments via email</h3>
+    <p>We'll send a copy of the record now, and later as appropriate (e.g., when the form owner decides to stop comments on the
+        form, or chooses to delete this form).</p>
+<form action="/email_submit" id="emailForm">
+    {{ g.email_form.email(maxlength="100", placeholder="Email (required)") }}
+    {{ g.email_form.hidden_tag() }}
+    <button class="btn btn-sm btn-primary">send</button>
+</form>
+<span id="result" style="color:blue;"></span>
+</div>
+</div>
+</div>
+<div class="divider-5"></div>
+
+<script>
+// Attach a submit handler to the form
+$( "#emailForm" ).submit(function( event ) {
+ 
+    // Stop form from submitting normally
+  event.preventDefault();
+ 
+  // Get some values from elements on the page:
+  var $form = $( this ),
+    term = $form.find( "input[name='email']" ).val(),
+    //term = $('form').serialize(),
+    url = $form.attr( "action" );
+ 
+  // Send the data using post
+  var posting = $.post( url, { s: term } );
+ 
+  // Put the results in a div
+  posting.done(function( data ) {
+  //$("#result").html(JSON.stringify(data.data.message));
+  $("#result").html(data.data.message);
+
+  alert(data.data.message);
+  //Show in console.log
+  console.log(data);
+  });
+      
+});
+</script>
+
+
+
+<script>
+function vote(itemId, vStat, targetId, sourceId, destId, loadingId) {
+    $(loadingId).show();
+    $(sourceId).hide();
+    $(destId).show();
+    $.post('/vote', {
+        vStat: vStat,
+        itemId: itemId
+    }).done(function(voted) {
+        $(targetId).html(voted.data.like);
+    }).fail(function() {
+        $(sourceId).text("{{ _('Error: Could not contact server.') }}");
+        $(loadingId).hide();
+    });
+}
+</script>
+
+<script>
     var text_max = 700;
 $('#count_message').html(text_max + ' ');
 
@@ -66,6 +154,6 @@ $('#text').keyup(function() {
   $('#count_message').html(text_remaining + ' ');
 });
     
-        </script>
+</script>
 {% endif %}
 {% endblock %}

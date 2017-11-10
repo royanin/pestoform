@@ -1,0 +1,35 @@
+<div class="modal fade" id="email-feedback-modal-{{ meeting.id }}" tabindex="-1" role="dialog" aria-labelledby="email-feedback-modal">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="note-modal">Email the form data and the feedback for: 
+            <span class="label label-warning">{{ meeting.title }}</span></h4>
+      </div>
+      <div class="modal-body">
+<form class='form-inline'  action='/email_feedback_update' method="post" name="post" enctype="multipart/form-data">
+            <div>We'll send an email right now, and more later if the form changes significantly:</div><br>
+            <div class="form-group">
+                {{ g.gen_form.id(type = 'hidden', value=meeting.id) }}
+                {{ g.email_form.email(id="email", maxlength="100", class="form-control", placeholder="Email (required)") }}
+            </div>
+            <button type="submit" class="btn btn-sm btn-primary" value="save" >Send Email</button>
+            {{ g.email_form.hidden_tag() }}
+            {#{% include "accept_tos.html" %}#}
+</form>
+ </div>
+      <div class="modal-footer">
+        <div class="row-fluid">
+            <div class="col-sm-12">
+                <br>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                  {# {{ g.meeting_form.hidden_tag() }} #}
+                    
+            </div>
+        </div>
+        
+      </div>
+        </div>      
+      </div>
+    </div>
+
