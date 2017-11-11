@@ -43,11 +43,16 @@
                     <i class="fa fa-envelope-o sr-email-form-data"></i> Email URL </button>
                 </form>
           </div>
-          {# <br><br>
+         <br><br>
           <div>
               <h4><i class="fa fa-share-alt sr-share-social"></i> Share form via social media:</h4>
-              <iframe src="https://www.facebook.com/plugins/share_button.php?href=https%3A%2F%2Fpestoform.com%2Fm%2F{{ meeting.url_string }}&layout=button&size=small&mobile_iframe=true&appId=277208896022831&width=63&height=20" width="63" height="20" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowTransparency="true"></iframe>
-          </div> #}
+               <div class="fb-share-button" 
+                    data-href="{{ config.SITE }}{{ url_for('m', url_string=meeting.url_string) }}"
+                    data-layout="button"
+                    data-size="small">
+                </div>
+
+          </div>
           
       </div>
       <div class="modal-footer">
@@ -64,3 +69,4 @@
         </div>      
       </div>
     </div>
+

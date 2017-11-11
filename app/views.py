@@ -10,7 +10,7 @@ from app import app, db, lm #, oid
 from .forms import LoginForm, EditForm, CourseForm, MeetingForm, SearchForm, ChangeIndexForm, MuddyForm, EmailForm, GenForm
 from .models import Role, Reguser, Course, Meeting, Muddy, EmailList
 #from .emails import follower_notification
-from config import COURSES_PER_PAGE, MEETINGS_PER_PAGE, FEEDBACK_PER_PAGE, MAX_SEARCH_RESULTS, OAUTH_CREDENTIALS,GOOGLE_CLIENT_ID, SORTING_TYPE
+from config import COURSES_PER_PAGE, MEETINGS_PER_PAGE, FEEDBACK_PER_PAGE, MAX_SEARCH_RESULTS, OAUTH_CREDENTIALS,GOOGLE_CLIENT_ID, SORTING_TYPE,SITE
 from .emails import course_view, meeting_view, form_open, eoi_noted, notify_server_error, form_share_email
 from .download import course_dl, meeting_dl
 from .random_funcs import find_acad_domain
@@ -548,7 +548,12 @@ def meeting_delete():
             print 'following emails: ', meeting.emails
             list_emails = [item.email for item in meeting.emails]
             list_emails.append(meeting.reguser.email)
-            meeting_view(list_emails,meeting)
+            print 'list_emails:',list_emails
+            #meeting_view(list_emails,meeting)
+            """
+            We cannot use async email with delete -- things get deleted before emails are
+            sent, raising 500 error. The stuff to be deleted should be placed on a queue etc.
+            """
             flash('{} (under {}) has been deleted!'.format(meeting.title, meeting.course.title))
             db.session.delete(meeting)
             db.session.commit()
@@ -1089,6 +1094,30 @@ def m(url_string):
     #print 'meeting.id:, request.method',meeting.id, request.method
     muddy = None 
 
+    if len(meeting.title)<20:
+        page_title = 'Feedback request: '+meeting.title
+    else:
+        page_title = 'Feedback request: '+meeting.title[:17]+'...'
+
+    #Make meta tag dictionary for facebook and twitter
+
+    """
+    meta_dict = {'"og:url"':'"'+meeting.url_string+'"',
+                 '"og:title"':'"'+page_title+'"',
+                 '"og:description"':'"'+meeting.prompt+'"',
+                 '"twitter:url"':'"'+meeting.url_string+'"',
+                 '"twitter:title"':'"'+page_title+'"',
+                 '"twitter:description"':'"'+meeting.prompt+'"'}
+                 
+    """
+
+    meta_dict = {"og:url":SITE+'/m/'+meeting.url_string,
+                 "og:title":page_title,
+                 "og:description":meeting.prompt,
+                 "twitter:url":SITE+'/m/'+meeting.url_string,
+                 "twitter:title":page_title,
+                 "twitter:description":meeting.prompt}
+    
     if  meeting == None:
         return render_template('form_not_found.html')
 
@@ -1109,9 +1138,11 @@ def m(url_string):
             db.session.commit()
             
         return render_template(('muddies.html'),
+                           page_title = page_title,
                            url_string=url_string,
                            meeting=meeting,
-                           muddies=muddies)
+                           muddies=muddies,
+                           meta_dict = meta_dict)
                            #g.muddy_form = MuddyForm())
         
 @app.route('/muddies', methods=['POST'])

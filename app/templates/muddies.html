@@ -97,10 +97,13 @@
     <button class="btn btn-sm btn-primary">send</button>
 </form>
 <span id="result" style="color:blue;"></span>
-{# </div>
-</div> #}
-<div class="divider-5"></div>
 
+{# <div class="fb-share-button" 
+    data-href='{{ meta_dict["og:url"] }}'
+    data-layout="button"
+    data-size="small">
+  </div>
+#}
 <script>
 // Attach a submit handler to the form
 $( "#emailForm" ).submit(function( event ) {

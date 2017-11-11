@@ -5,9 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
+    
+    {# <meta property='{{ meta_dict["og:url"] }}'> #}
 
+    {% for key,value in meta_dict.iteritems() %}
+    <meta property="{{ key }}" content="{{ value }}">
+    {% endfor %}
 
-    <title>Pestoform - one feedback at a time!</title>
+    {% if page_title == None %}
+        <title>Pestoform - one feedback at a time!</title>
+    {% else %}
+        <title>{{ page_title }}</title>
+    {% endif %}
     
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     <link href="/static/css/bootstrap.css" rel="stylesheet" media="screen">
