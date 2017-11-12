@@ -1,0 +1,16 @@
+          <div>
+              <h4><i class="fa fa-users sr-share-social"></i> Share form via social media:</h4>
+              <div class="input-group">
+                <a target="_blank" href="https://www.linkedin.com/shareArticle?url=https%3A%2F%2Fpestoform.com%2Fm%2F{{ meeting.url_string }}&mini=true&title={{ meeting.title }}&summary={{ meeting.prompt }}"><button type="button" class="btn btn-sm btn-default" alt="Share on LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i> | linkedin</button></a>
+
+                                        
+                <a target="_blank" href="https://plus.google.com/share?url=https%3A%2F%2Fpestoform.com%2Fm%2F{{ meeting.url_string }}" onclick="javascript:window.open(this.href,
+                '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=400,width=300');return false;"><button type="button" class="btn btn-sm btn-default" alt="Share on Google-Plus"><i class="fa fa-google-plus" aria-hidden="true"></i> | Google</button></a>
+
+                  
+                <a class="twitter-share-button" target="_blank" href="https://twitter.com/intent/tweet?text={{ meeting.title }}&url=https%3A%2F%2Fpestoform.com%2Fm%2F{{ meeting.url_string }}" data-size="small"><button type="button" class="btn btn-sm btn-default"  alt="Share on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i> | Tweet</button></a>
+                  
+                <button type="button" class="btn btn-sm btn-default"  alt="Share on Facebook" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpestoform.com%2Fm%2F{{ meeting.url_string }}','facebook-share-dialog','width=313,height=218'); return false;"><i class="fa fa-facebook" aria-hidden="true"></i> | Share</button>
+                                  
+                </div>
+          </div>

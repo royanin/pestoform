@@ -4,7 +4,7 @@
 
 {% block content %}
 
-<div class="col-sm-6 col-sm-offset-3 text-center">
+<div class="col-sm-6 col-sm-offset-3">
 
     <h3>Form "{{ meeting.title }}" has been created.</h3>
     
@@ -15,7 +15,7 @@
             </span></p>
     <!-- <button onclick="copyToClipboard('#p1')">Copy Link</button> -->
     </div>
-<form action='/send_form_open' method="post" id = "form-open-email-{{ meeting.id }}" name="post">
+    <form action='/send_form_open' method="post" id = "form-open-email-{{ meeting.id }}" name="post">
     <div class="row-fluid">
         <div class="col-sm-12">
             <button onclick="copyToClipboard('#p1')" type="button" class="btn btn-sm btn-primary">Copy link</button>
@@ -24,8 +24,30 @@
                 {{ g.meeting_form.hidden_tag() }}
         </div>
     </div>
-</form>
+    </form>
+
+    <div class="divider-5"></div>
     
+    <div class="row-fluid">
+        <div class="col-sm-12">
+        <h4><i class="fa fa-share-alt sr-share-email"></i> Share form URL via email:</h4>
+        <form action='/email_form_url' method="post" id = "form-download-meeting-{{ meeting.id }}" name="post" onsubmit="setTimeout(function () { window.location.reload(); }, 1000)">
+            {{ g.gen_form.id(type = 'hidden', value=meeting.id) }}
+            {{ g.gen_form.inp_string(id=meeting.id, rows=3,  maxlength="500", class="form-control", placeholder="List multiple     emails separated by ','", value="" ) }}
+            {{ g.gen_form.hidden_tag() }}
+            <button type="submit" name="meeting_id" class="btn btn-default" value="{{ meeting.id }}">
+                <i class="fa fa-envelope-o sr-email-form-data"></i> Email URL </button>
+        </form>
+        </div>
+    </div>
+
+    <div class="divider-5"></div>
+    <div class="row-fluid">
+        <div class="col-sm-12">
+            {% include "form_share_social.html" %}
+        </div>
+    </div>
+    <div class="divider-5"></div>
     <p><a href="index">Create more forms</a> | <a href="view"> Go to dashboard</a> | <a href="/view_feedback/{{ meeting.url_string }}">Other form options</a></p>
 
 </div>
