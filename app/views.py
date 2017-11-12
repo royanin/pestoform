@@ -1094,32 +1094,6 @@ def m(url_string):
     #print 'meeting.id:, request.method',meeting.id, request.method
     muddy = None 
 
-    if len(meeting.title)<20:
-        page_title = 'Feedback request: '+meeting.title
-    else:
-        page_title = 'Feedback request: '+meeting.title[:17]+'...'
-
-    #Make meta tag dictionary for facebook and twitter
-
-    """
-    meta_dict = {'"og:url"':'"'+meeting.url_string+'"',
-                 '"og:title"':'"'+page_title+'"',
-                 '"og:description"':'"'+meeting.prompt+'"',
-                 '"twitter:url"':'"'+meeting.url_string+'"',
-                 '"twitter:title"':'"'+page_title+'"',
-                 '"twitter:description"':'"'+meeting.prompt+'"'}
-                 
-    """
-
-    meta_dict = {"og:url":SITE+'/m/'+meeting.url_string,
-                 "og:title":page_title,
-                 "og:type":"website",
-                 "og:image":"",
-                 "fb:app_id":"277208896022831",
-                 "og:description":meeting.prompt,
-                 "twitter:url":SITE+'/m/'+meeting.url_string,
-                 "twitter:title":page_title,
-                 "twitter:description":meeting.prompt}
     
     if  meeting == None:
         return render_template('form_not_found.html')
@@ -1131,6 +1105,23 @@ def m(url_string):
         #print 'muddy id:',g.muddy_form.id.data
         session['url_string'] = url_string
         #g.muddy_form(form)
+
+        if len(meeting.title)<20:
+            page_title = 'Feedback request: '+meeting.title
+        else:
+            page_title = 'Feedback request: '+meeting.title[:17]+'...'
+
+        #Make meta tag dictionary for facebook and twitter
+        meta_dict = {"og:url":SITE+'/m/'+meeting.url_string,
+                     "og:title":page_title,
+                     "og:type":"website",
+                     "og:image":"",
+                     "fb:app_id":"277208896022831",
+                     "og:description":meeting.prompt,
+                     "twitter:url":SITE+'/m/'+meeting.url_string,
+                     "twitter:title":page_title,
+                     "twitter:description":meeting.prompt}
+    
 
         #Determine close_stat based on live_till:
         if datetime.utcnow() > meeting.live_till:
