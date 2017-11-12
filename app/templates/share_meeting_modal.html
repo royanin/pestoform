@@ -45,16 +45,15 @@
           </div>
          <br><br>
           <div>
-              <h4><i class="fa fa-share-alt sr-share-social"></i> Share form via social media:</h4>
-               <div class="fb-share-button" 
-                    data-href="{{ config.SITE }}{{ url_for('m', url_string=meeting.url_string) }}"
-                    data-layout="button"
-                    data-size="small">
-                </div>
+              <h4><i class="fa fa-users sr-share-social"></i> Share form via social media:</h4>
+              <div class="input-group">
+                    <button type="button" class="btn btn-sm btn-default"  alt="Share on Facebook" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpestoform.com%2Fm%2F{{ meeting.url_string }}','facebook-share-dialog','width=313,height=218'); return false;"><i class="fa fa-facebook" aria-hidden="true"></i> | Share</button>
+                  
+                  <a class="twitter-share-button" target="_blank" href="https://twitter.com/intent/tweet?text={{ meeting.title }}&url=https%3A%2F%2Fpestoform.com%2Fm%2F{{ meeting.url_string }}" data-size="small"><button type="button" class="btn btn-sm btn-default"  alt="Share on Twitter"><i class="fa fa-twitter" aria-hidden="true"></i> | Tweet</button></a>
 
+                </div>
           </div>
-          
-      </div>
+        </div>
       <div class="modal-footer">
         <div class="row-fluid">
             <div class="col-sm-12">
