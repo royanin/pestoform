@@ -1113,6 +1113,9 @@ def m(url_string):
 
     meta_dict = {"og:url":SITE+'/m/'+meeting.url_string,
                  "og:title":page_title,
+                 "og:type":"website",
+                 "og:image":"",
+                 "fb:app_id":"277208896022831",
                  "og:description":meeting.prompt,
                  "twitter:url":SITE+'/m/'+meeting.url_string,
                  "twitter:title":page_title,
