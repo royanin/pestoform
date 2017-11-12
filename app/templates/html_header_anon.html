@@ -7,11 +7,13 @@
     <meta name="author" content="">
     
     {# <meta property='{{ meta_dict["og:url"] }}'> #}
-
+    
+    {% if meta_dict is defined %}
     {% for key,value in meta_dict.iteritems() %}
     <meta property="{{ key }}" content="{{ value }}">
     {% endfor %}
-
+    {% endif %}
+    
     {% if page_title == None %}
         <title>Pestoform - one feedback at a time!</title>
     {% else %}
