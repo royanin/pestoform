@@ -697,7 +697,8 @@ def feedback_delete():
                 print 'muddy is:',int(item), muddy
                 meeting_title = muddy.meeting.title
                 course_title = muddy.meeting.course.title
-            
+                session['bc_url'] = muddy.meeting.url_string
+                
                 db.session.delete(muddy)
                 db.session.commit()
             
