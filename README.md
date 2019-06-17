@@ -10,4 +10,4 @@
 I wanted to build a website which would allow instructors to gather anonymous
 feedback from students by sending a simple link.
 
-The resulting website is (hopefully!) still running at [https://pestoform.com].
+The resulting website is (hopefully!) still running at https://pestoform.com.
